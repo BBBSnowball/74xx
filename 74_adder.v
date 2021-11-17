@@ -1,3 +1,4 @@
+/*
 (* techmap_celltype = "$add" *)
 module _80_74AC283_add (A, B, Y);
 
@@ -85,3 +86,4 @@ endgenerate
 assign Y = YY[Y_WIDTH-1:0];
 
 endmodule
+*/

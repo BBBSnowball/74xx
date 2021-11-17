@@ -5,10 +5,11 @@ opt
 wreduce
 opt
 extract -map ../74_extract.il
-dffsr2dff
-dff2dffe
+#dffsr2dff
+#dff2dffe
+opt_dff
 opt_merge
-dff2dffe -unmap-mince 8
+#dff2dffe -unmap-mince 8
 pmux2shiftx
 read_verilog -lib ../74_models.v
 # read_liberty -lib ../po74g.lib

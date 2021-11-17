@@ -15,25 +15,32 @@ library(74series) {
     nom_temperature: 25;
     nom_voltage: 5;
 
+    // area: price in ct when buying 30pcs, 2021-11-17, on LCSC
+    // (the ones that I haven't updated are 1000x the previous value - those are not available or weren't used anyway)
+
     // 74AC00 quad 2-input NAND gate
     cell(74AC00_4x1NAND2) {
-        area: 3;
+        area: 7;  //28/4
+        // https://lcsc.com/product-detail/Gates_onsemi-MC74AC00DR2G_C233513.html
         pin(A) { direction: input; }
         pin(B) { direction: input; }
         pin(Y) { direction: output; function: "(A*B)'"; }
      }
 
     // 74AC02 quad 2-input NOR gate
-    cell(74AC02_4x1NOR2) {
-        area: 3;
-        pin(A) { direction: input; }
-        pin(B) { direction: input; }
-        pin(Y) { direction: output; function: "(A+B)'"; }
-    }
+    //cell(74AC02_4x1NOR2) {
+    //    //area: 8;  // 30/4
+    //    //https://lcsc.com/product-detail/Gates_onsemi-MC74AC02DR2G_C233451.html
+    //    area: 8000;  // We only use 7 so let's not use them at all.
+    //    pin(A) { direction: input; }
+    //    pin(B) { direction: input; }
+    //    pin(Y) { direction: output; function: "(A+B)'"; }
+    //}
 
     // 74AC04 hex inverter
     cell(74AC04_6x1NOT) {
-        area: 2;
+        area: 3;  // 13/6
+        //https://lcsc.com/product-detail/Inverters_Texas-Instruments-SN74AC04DR_C352940.html
         pin(A) {
            direction: input;
            capacitance: 3.5;
@@ -55,7 +62,8 @@ library(74series) {
 
     // 74AC08 quad 2-input AND
     cell(74AC08_4x1AND2) {
-        area: 3;
+        area: 5;  // 19/4
+        //https://lcsc.com/product-detail/Gates_Texas-Instruments-SN74AC08DR_C352941.html
         pin(A) { direction: input; }
         pin(B) { direction: input; }
         pin(Y) { direction: output; function: "A*B"; }
@@ -63,7 +71,9 @@ library(74series) {
 
     // 74AC10 triple 3-input NAND
     cell(74AC10_3x1NAND3) {
-        area: 4;
+        area: 3;  // 10/3
+        //https://lcsc.com/product-detail/Gates_Nexperia-74HC10D_C5595.html
+        //FIXME HC, not AC. Is that ok? It's cheaper... do the same for the others?
         pin(A) { direction: input; }
         pin(B) { direction: input; }
         pin(C) { direction: input; }
@@ -71,18 +81,20 @@ library(74series) {
     }
 
     // 74AC20 dual 4-input NAND
-    cell(74AC20_2x1NAND4) {
-        area: 5;
-        pin(A) { direction: input; }
-        pin(B) { direction: input; }
-        pin(C) { direction: input; }
-        pin(D) { direction: input; }
-        pin(Y) { direction: output; function: "(A*B*C*D)'"; }
-    }
+    //cell(74AC20_2x1NAND4) {
+    //    area: 5000;  //FIXME not available
+    //    pin(A) { direction: input; }
+    //    pin(B) { direction: input; }
+    //    pin(C) { direction: input; }
+    //    pin(D) { direction: input; }
+    //    pin(Y) { direction: output; function: "(A*B*C*D)'"; }
+    //}
 
     // 74AC32 quad 2-input OR gate
     cell(74AC32_4x1OR2) {
-        area: 3;
+        area: 3;  // 8/3
+        //https://lcsc.com/product-detail/Gates_Texas-Instruments-SN74AC32DR_C352943.html
+        //https://lcsc.com/product-detail/Gates_onsemi-MC74AC32DR2G_C233519.html
         pin(A) { direction: input; }
         pin(B) { direction: input; }
         pin(Y) { direction: output; function: "(A+B)"; }
@@ -90,7 +102,9 @@ library(74series) {
 
     // 74AC74 dual D flip-flop with set and reset
     cell(74AC74_2x1DFFSR) {
-        area: 5;
+        area: 4;  // 7/2
+        //FIXME HCT instead of AC
+        //https://lcsc.com/product-detail/Flip-Flops_onsemi-MM74HCT74MX_C274679.html
         ff(IQ, IQN) {
            clocked_on: "CLK";
            next_state: "D";
@@ -107,22 +121,24 @@ library(74series) {
     }
 
     // 74AC273 octal D flip-flop with common reset
-    cell(74AC273_8x1DFFR) {
-	area: 2.25; // amortized clock and reset cost
-        ff(IQ, IQN) {
-           clocked_on: "CLK";
-           next_state: "D";
-           clear: "C'";
-        }
-        pin(CLK) { direction: input; clock: true; }
-        pin(C) { direction: input; }
-        pin(D) { direction: input; }
-        pin(Q) { direction: output; function: "IQ"; }
-    } 
+      //cell(74AC273_8x1DFFR) {
+      //    area: 2.25; // amortized clock and reset cost
+      //    ff(IQ, IQN) {
+      //       clocked_on: "CLK";
+      //       next_state: "D";
+      //       clear: "C'";
+      //    }
+      //    pin(CLK) { direction: input; clock: true; }
+      //    pin(C) { direction: input; }
+      //    pin(D) { direction: input; }
+      //    pin(Q) { direction: output; function: "IQ"; }
+      //} 
 
     // 74AC86 quad 2-input XOR gate
     cell(74AC86_4x1XOR2) {
         area: 3;
+        //https://lcsc.com/product-detail/Gates_Diodes-Incorporated-74AUP1G86FW4-7_C362115.html
+        // -> only one gate per package
         pin(A) { direction: input; }
         pin(B) { direction: input; }
         pin(Y) { direction: output; function: "(A*B')+(A'*B)"; }
@@ -130,7 +146,7 @@ library(74series) {
 
     // 74AC151 single 8:1 multiplexer
     cell(74AC151_1x1MUX8) {
-        area: 12;
+        area: 12000;
         pin(A) { direction: input; }
         pin(B) { direction: input; }
         pin(C) { direction: input; }
@@ -148,7 +164,7 @@ library(74series) {
 
     // 74AC151 single 8:1 multiplexer, inverting output
     cell(74AC151_1x1MUXI8) {
-        area: 12;
+        area: 12000;
         pin(A) { direction: input; }
         pin(B) { direction: input; }
         pin(C) { direction: input; }
@@ -167,7 +183,7 @@ library(74series) {
 
     // 74AC153 dual 4:1 multiplexer
     cell(74AC153_2x1MUX4) {
-        area: 7;
+        area: 7000;  //FIXME not available
         pin(A) { direction: input; }
         pin(B) { direction: input; }
         pin(C) { direction: input; }
@@ -178,28 +194,28 @@ library(74series) {
     }
 
     // 74AC257 quad 2:1 multiplexer
-    cell(74AC257_4x1MUX2) {
-        area: 4;
-        pin(A) { direction: input; }
-        pin(B) { direction: input; }
-        pin(S) { direction: input; }
-        pin(Y) { direction: output; function: "(S'*A)+(S*B)"; }
-    }
+    //cell(74AC257_4x1MUX2) {
+    //    area: 4000;
+    //    pin(A) { direction: input; }
+    //    pin(B) { direction: input; }
+    //    pin(S) { direction: input; }
+    //    pin(Y) { direction: output; function: "(S'*A)+(S*B)"; }
+    //}
 
     // A buffer cell needed to make ABC happy
     // Will get optimized away
     cell("$_BUF_") {
-        area: 2;
+        area: 2000;
         pin(A) { direction: input; }
         pin(Y) { direction: output; function: "A"; }
     }
 
     // 74AC374 octal D flip-flop
-    cell(74AC374_8x1DFF) {
-        area: 2.0625; // amortized clock pin cost
-        ff(IQ, IQN) { clocked_on: "CLK"; next_state: "D"; }
-        pin(CLK) { direction: input; clock: true; }
-        pin(D) { direction: input; }
-        pin(Q) { direction: output; function: "IQ"; }
-    }
+      //cell(74AC374_8x1DFF) {
+      //    area: 2.0625; // amortized clock pin cos000t
+      //    ff(IQ, IQN) { clocked_on: "CLK"; next_state: "D"; }
+      //    pin(CLK) { direction: input; clock: true; }
+      //    pin(D) { direction: input; }
+      //    pin(Q) { direction: output; function: "IQ"; }
+      //}
 }

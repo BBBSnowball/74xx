@@ -23,6 +23,7 @@ assign {CO, S} = A + B + CI;
 
 endmodule
 
+/*
 module \74AC377_8x1DFFE (D, CE, CP, Q);
 
 input D, CE, CP;
@@ -33,6 +34,7 @@ always @(posedge CP) begin
 end
 
 endmodule
+*/
 
 module \74HC688_1x1EQ8 (A, B, E, Q);
 
