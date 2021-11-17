@@ -1,0 +1,6 @@
+*.erc
+*.log
+*.json
+*.pyc
+*.net
+/generate_netlist_lib_sklib.py

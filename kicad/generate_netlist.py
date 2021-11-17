@@ -97,6 +97,9 @@ def create_chips(chip_types, nets):
         elif typ == '\\74AC11074_2x1DFFSR':
             mapping = {"D{}":"D", "Q{}":"Q", "C{}": "CLK", "~R{}": "C", "~S": "P"}
             make_abc(new_7474, mapping, chips, nets, 1)
+        elif typ == '\\74AC74_2x1DFFSR':
+            mapping = {"D{}":"D", "Q{}":"Q", "C{}": "CLK", "~R{}": "C", "~S{}": "P"}
+            make_abc(new_7474, mapping, chips, nets, 1)
         elif typ == '\\74AC11257_4x1MUX2':
             mapping = {"{}A": "A", "{}B": "B", "{}Y": "Y", "S": "S"}
             select = group_by(pin_getter("S"), chips)
@@ -174,6 +177,21 @@ def create_chips(chip_types, nets):
         elif typ == '\\74AC161_1x1COUNT4':
             mapping = {"D{}": "A", "Q{}": "Q", "~PE": "LOAD", "CET": "ENT", "TC": "RCO", "CP": "CLK"}
             make_techmap(new_74161, mapping, chips, nets, 0)
+        elif typ == '\\74AC04_6x1NOT':
+            mapping = {"{}A": "A", "{}Y": "Y"}
+            make_abc(new_7404, mapping, chips, nets, 1)
+        elif typ == '\\74AC32_4x1OR2':
+            mapping = {"{}A": "A", "{}B": "B", "{}Y": "Y"}
+            make_abc(new_7432, mapping, chips, nets, 1)
+        elif typ == '\\74AC00_4x1NAND2':
+            mapping = {"{}A": "A", "{}B": "B", "{}Y": "Y"}
+            make_abc(new_7400, mapping, chips, nets, 1)
+        elif typ == '\\74AC08_4x1AND2':
+            mapping = {"{}A": "A", "{}B": "B", "{}Y": "Y"}
+            make_abc(new_7402, mapping, chips, nets, 1)
+        elif typ == '\\74AC86_4x1XOR2':
+            mapping = {"{}A": "A", "{}B": "B", "{}Y": "Y"}
+            make_abc(new_7486, mapping, chips, nets, 1)
         else:
             raise Exception("%s not handled" % typ)
 
