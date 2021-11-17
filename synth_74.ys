@@ -22,7 +22,7 @@ opt -full -mux_undef -mux_bool
 memory_bram -rules ../bram.rules
 techmap -map +/techmap.v -map ../74_dffe.v
 opt
-muxcover -mux4 -mux8
+#muxcover -mux4 -mux8
 opt_merge
 techmap -map ../74_mux.v
 dfflibmap -liberty ../74ac.lib

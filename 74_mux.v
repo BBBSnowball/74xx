@@ -1,3 +1,4 @@
+/*
 (* techmap_celltype = "$_MUX4_" *)
 module _80_74AC153_mux4 (A, B, C, D, S, T, Y);
 
@@ -38,3 +39,4 @@ output Y;
 );
 
 endmodule
+*/
