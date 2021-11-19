@@ -68,7 +68,6 @@
         <port name="Y"/>
       </output_ports>
     </model>
-    <!--
     <model name="\74AC74_2x1DFFSR">
       <input_ports>
         <port name="C" combinational_sink_ports="Q"/>
@@ -78,18 +77,6 @@
       </input_ports>
       <output_ports>
         <port name="Q" clock="CLK"/>
-      </output_ports>
-    </model>
-    -->
-    <model name="\74AC74_2x1DFFSR">
-      <input_ports>
-        <port name="C" combinational_sink_ports="Q"/>
-        <port name="CLK"/>
-        <port name="D"/>
-        <port name="P" combinational_sink_ports="Q"/>
-      </input_ports>
-      <output_ports>
-        <port name="Q"/>
       </output_ports>
     </model>
   </models>
@@ -118,6 +105,7 @@
         </equivalent_sites>
         <input name="I" num_pins="40" equivalent="full"/>
         <output name="O" num_pins="20" equivalent="none"/>
+        <clock name="clk" num_pins="2"/>
         <fc in_type="frac" in_val="0.15" out_type="frac" out_val="0.10"/>
         <pinlocations pattern="spread"/>
       </sub_tile>
@@ -252,6 +240,7 @@
     <pb_type name="clb">
       <input name="I" num_pins="40" equivalent="full"/>
       <output name="O" num_pins="20" equivalent="none"/>
+      <clock name="clk" num_pins="2"/>
       <mode name="74AC04_6x1NOT">
         <pb_type name="inv" blif_model=".subckt \74AC04_6x1NOT" num_pb="6">
           <input name="A" num_pins="1"/>
@@ -324,8 +313,6 @@
           <direct name="direct3" input="xor2.Y" output="clb.O[3:0]"/>
         </interconnect>
       </mode>
-      <!-- FIXME model with clock breaks everything -->
-      <!--
       <mode name="74AC74_2x1DFFSR">
         <pb_type name="dff" blif_model=".subckt \74AC74_2x1DFFSR" num_pb="2">
           <input name="C" num_pins="1"/>
@@ -336,24 +323,7 @@
         </pb_type>
         <interconnect>
           <direct name="direct1" input="clb.I[1:0]" output="dff.C"/>
-          <direct name="direct2" input="clb.I[3:2]" output="dff.CLK"/>
-          <direct name="direct3" input="clb.I[5:4]" output="dff.D"/>
-          <direct name="direct4" input="clb.I[7:6]" output="dff.P"/>
-          <direct name="direct5" input="dff.Q" output="clb.O[1:0]"/>
-        </interconnect>
-      </mode>
-      -->
-      <mode name="74AC74_2x1DFFSR">
-        <pb_type name="dff" blif_model=".subckt \74AC74_2x1DFFSR" num_pb="2">
-          <input name="C" num_pins="1"/>
-          <input name="CLK" num_pins="1"/>
-          <input name="D" num_pins="1"/>
-          <input name="P" num_pins="1"/>
-          <output name="Q" num_pins="1"/>
-        </pb_type>
-        <interconnect>
-          <direct name="direct1" input="clb.I[1:0]" output="dff.C"/>
-          <direct name="direct2" input="clb.I[3:2]" output="dff.CLK"/>
+          <direct name="direct2" input="clb.clk" output="dff.CLK"/>
           <direct name="direct3" input="clb.I[5:4]" output="dff.D"/>
           <direct name="direct4" input="clb.I[7:6]" output="dff.P"/>
           <direct name="direct5" input="dff.Q" output="clb.O[1:0]"/>
