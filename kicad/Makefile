@@ -18,7 +18,7 @@ clean:
 VTR_PATH=~/yosys/vtr-verilog-to-routing
 serv.place: serv.eblif 74xx_fpga.xml
 	sed -E <serv.eblif >serv2.eblif 's/ \S+=[$$](false|true|undef)//g'
-	$(VTR_PATH)/vpr/vpr 74xx_fpga.xml serv2.eblif --pack --place \
+	$(VTR_PATH)/vpr/vpr 74xx_fpga.xml serv2.eblif \
 		--netlist_verbosity 2 --alpha_clustering 0.0 --beta_clustering 0.0 --allow_unrelated_clustering on \
 		--clustering_pin_feasibility_filter off --balance_block_type_utilization off \
 		--graphics_commands "set_draw_block_internals 1; set_nets 2; set_macros 1; save_graphics place{i}.png" \

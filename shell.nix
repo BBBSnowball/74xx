@@ -4,5 +4,6 @@ pkgs.mkShell {
 		ghdl yosys
 		gnumake
 		(python3.withPackages (p: [ p.skidl ]))
+		kicad
 	];
 }
