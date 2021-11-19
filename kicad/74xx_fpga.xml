@@ -114,7 +114,6 @@
   <!-- ODIN II specific config ends -->
   <!-- Physical descriptions begin -->
   <layout>
-    <!-- <fixed_layout name="x" width="100" height="100"> -->
     <auto_layout>
       <!--Perimeter of 'io' blocks with 'EMPTY' blocks at corners-->
       <perimeter type="io" priority="100"/>
@@ -122,6 +121,21 @@
       <!--Fill with 'clb'-->
       <fill type="clb" priority="10"/>
     </auto_layout>
+    <fixed_layout name="100" width="100" height="100">
+      <perimeter type="io" priority="100"/>
+      <corners type="EMPTY" priority="101"/>
+      <fill type="clb" priority="10"/>
+    </fixed_layout>
+    <fixed_layout name="20" width="20" height="20">
+      <perimeter type="io" priority="100"/>
+      <corners type="EMPTY" priority="101"/>
+      <fill type="clb" priority="10"/>
+    </fixed_layout>
+    <fixed_layout name="22" width="22" height="22">
+      <perimeter type="io" priority="100"/>
+      <corners type="EMPTY" priority="101"/>
+      <fill type="clb" priority="10"/>
+    </fixed_layout>
   </layout>
   <device> <!-- FIXME can we remove this? -->
     <!-- VB & JL: Using Ian Kuon's transistor sizing and drive strength data for routing, at 40 nm. Ian used BPTM 
