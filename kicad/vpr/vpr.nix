@@ -33,15 +33,18 @@ stdenv.mkDerivation rec {
     cairo
     gtk3
     eigen
+    openssl
 
     # dependencies of glib and gio
-    xorg.libxcb
-    xorg.libXdmcp
-    pcre2
-    libuuid  # mount.pc
-    libselinux
-    libsepol
-    pcre
+    #xorg.libxcb
+    #xorg.libXdmcp
+    #pcre2
+    #libuuid  # mount.pc
+    #libselinux
+    #libsepol
+    #pcre
+    #libthai
+    #libdatrie
   ];
 
   nativeBuildInputs = with pkgs; [
@@ -89,26 +92,53 @@ stdenv.mkDerivation rec {
   #  cp $java_capnp libs/libvtrcapnproto/schema/capnp/java.capnp
   #'';
 
+  # suppress some warnings
+  # (because there are *lots* of them and this makes it hard to see the relevant output)
+  CXXFLAGS = "-Wno-alloc-size-larger-than -Wno-deprecated-declarations";
+
+
   # method 1: skip Nix' hooks for cmake and let vtr's Makefile do the job
 
-  dontConfigure = true;
-
-  buildPhase = ''
-    #make MAKECMDGOALS=vpr
-    make vpr -j$NIX_BUILD_CORES
-  '';
+#  dontConfigure = true;
+#
+#  buildPhase = ''
+#    #make MAKECMDGOALS=vpr
+#    make vpr -j$NIX_BUILD_CORES
+#  '';
 
   # method 2: tell Nix about the args that would be added by vtr's Makefile
   # -> doesn't work because we somehow call the inner Makefile2 with "all"
 
-  #cmakeFlags = [
-  #  #"-DCMAKE_BUILD_TYPE=release"
-  #  #"-G" "Unix Makefiles"
-  #];
-  #makeFlags = [
-  #  # build only vpr because we don't need the others and yosys build would fail:
-  #  # see https://github.com/YosysHQ/yosys/issues/681
-  #  # and https://github.com/NixOS/nixpkgs/blob/nixos-23.05/pkgs/development/compilers/yosys/fix-clang-build.patch
-  #  "vpr"
-  #];
+  cmakeFlags = [
+    #"-DCMAKE_BUILD_TYPE=release"
+    #"-G" "Unix Makefiles"
+  ];
+  makeFlags = [
+    # build only vpr because we don't need the others and yosys build would fail:
+    # see https://github.com/YosysHQ/yosys/issues/681
+    # and https://github.com/NixOS/nixpkgs/blob/nixos-23.05/pkgs/development/compilers/yosys/fix-clang-build.patch
+    "vpr"
+
+    # build other libraries because it is fast and we can avoid errors when installing the libraries
+    "librtlnumber"
+    "rtl_number"
+    "libvqm"
+  ];
+
+  #checkPhase = ''
+  #  make test_vpr -j$NIX_BUILD_CORES
+  #'';
+
+  installPhase = ''
+    #mkdir $out
+    #cp -a .. $out/debug_all
+
+    cmake -P vpr/cmake_install.cmake
+
+    cmake -P libs/cmake_install.cmake \
+      || echo "WARN Installing the libraries has failed but we continue" >&2
+
+    mkdir $out/lib
+    mv $out/bin/*.a $out/lib/
+  '';
 }
