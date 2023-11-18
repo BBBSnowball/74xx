@@ -5,5 +5,6 @@ pkgs.mkShell {
 		gnumake
 		(python3.withPackages (p: [ p.skidl ]))
 		kicad
+		(import ./kicad/vpr/vpr.nix { inherit pkgs; })
 	];
 }
