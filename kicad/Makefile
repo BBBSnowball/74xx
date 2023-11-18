@@ -1,11 +1,11 @@
 .PHONY: all clean sim_counter
 
-all: boneless.net
+all: serv.net
 
 %.json: ../benchmarks/%.v ../74ac.lib ../74_models.v ../74_adder.v ../74_dffe.v ../74_mux.v ../synth_74.ys
 	yosys -q -s ../synth_74.ys -p "write_json $@" $<
 
-serv.json serv.eblif: ~/yosys/serv/rtl/*.v ../74ac.lib ../74_models.v ../74_adder.v ../74_dffe.v ../74_mux.v ../synth_74.ys
+serv.json serv.eblif: ../../serv/rtl/*.v ../74ac.lib ../74_models.v ../74_adder.v ../74_dffe.v ../74_mux.v ../synth_74.ys
 	# We omit -cname and -iname because the output nets actually have more useful names.
 	yosys -q -s ../synth_74.ys -p "write_json $@; write_blif -conn serv.eblif" ~/yosys/serv/rtl/*.v
 
@@ -15,7 +15,7 @@ serv.json serv.eblif: ~/yosys/serv/rtl/*.v ../74ac.lib ../74_models.v ../74_adde
 clean:
 	rm -f *.net *.json *.erc *.log serv.eblif place.png *.rpt *.place
 
-VTR_PATH=~/yosys/vtr-verilog-to-routing
+VTR_PATH=../../vtr-verilog-to-routing
 serv.place: serv.eblif 74xx_fpga.xml
 	sed -E <serv.eblif >serv2.eblif 's/ \S+=[$$](false|true|undef)//g'
 	$(VTR_PATH)/vpr/vpr 74xx_fpga.xml serv2.eblif \
