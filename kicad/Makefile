@@ -7,7 +7,7 @@ all: serv.net
 
 serv.json serv.eblif: ../../serv/rtl/*.v ../74ac.lib ../74_models.v ../74_adder.v ../74_dffe.v ../74_mux.v ../synth_74.ys
 	# We omit -cname and -iname because the output nets actually have more useful names.
-	yosys -q -s ../synth_74.ys -p "write_json $@; write_blif -conn serv.eblif" ~/yosys/serv/rtl/*.v
+	yosys -q -s ../synth_74.ys -p "write_json $@; write_blif -conn serv.eblif" ../../serv/rtl/*.v
 
 %.net: %.json generate_netlist.py parts.py
 	python3 generate_netlist.py $<
