@@ -14,15 +14,24 @@
 
       #defaultPackage = packages.hello;
 
-      devShells.default = pkgs.mkShell {
+      devShells.default = pkgs.mkShell rec {
         buildInputs = (with pkgs; [
           ghdl yosys
           gnumake
-          (python3.withPackages (p: [ p.skidl ]))
+          (python3.withPackages (p: with p; [
+            skidl
+            (p.callPackage ./nix/kinet2pcb.nix { hierplace = p.callPackage ./nix/hierplace.nix {}; })
+            kicad
+          ]))
           kicad
         ]) ++ (with packages; [
           vpr
         ]);
+
+        KICAD7_SYMBOL_DIR =  "${pkgs.kicad.libraries.footprints}/share/kicad/symbols";
+        KICAD7_FOOTPRINT_DIR = "${pkgs.kicad.libraries.footprints}/share/kicad/footprints";
+        KICAD_SYMBOL_DIR = KICAD7_SYMBOL_DIR;
+        KICAD_FOOTPRINT_DIR = KICAD7_FOOTPRINT_DIR;
       };
     });
 }
