@@ -177,13 +177,64 @@ if __name__ == '__main__':
             pcb_txt = pcbnew.PCB_TEXT(brd)
             pcb_txt.SetText(("clb[%d]\n%s" % (chip["clbnum"], chip["type"][1:])) + "".join("\n" + part["name"] for part in chip["parts"]))
             pcb_txt.SetPosition(xy + xy_mm(7.6/2, -1.6))
+            if fp:
+                pcb_txt.SetPosition(fp.Reference().GetPosition() + xy_mm(0, -1.0))
             pcb_txt.SetHorizJustify(pcbnew.GR_TEXT_H_ALIGN_CENTER)
             pcb_txt.SetVertJustify(pcbnew.GR_TEXT_V_ALIGN_BOTTOM)
             #pcb_txt.Rotate(xy_mm(x, y), text["angle"])
             pcb_txt.SetTextSize(xy_mm(1, 1))
+            pcb_txt.SetTextThickness(round(0.15 * 1000 * 1000))
             #pcb_txt.SetLayer(pcbnew.F_SilkS)
             pcb_txt.SetLayer(pcbnew.User_9)
             brd.Add(pcb_txt)
+
+            if fp:
+                pcb_txt = pcbnew.PCB_TEXT(brd)
+                pcb_txt.SetText(chip["type"][1:])
+                pcb_txt.SetPosition(fp.Value().GetPosition())
+                pcb_txt.SetHorizJustify(pcbnew.GR_TEXT_H_ALIGN_CENTER)
+                pcb_txt.SetVertJustify(pcbnew.GR_TEXT_V_ALIGN_CENTER)
+                pcb_txt.SetTextSize(xy_mm(1, 1))
+                pcb_txt.SetTextThickness(round(0.15 * 1000 * 1000))
+                pcb_txt.SetLayer(pcbnew.F_SilkS)
+                brd.Add(pcb_txt)
+                fp.Value().SetVisible(False)
+
+                for pad in fp.Pads():
+                    if pad.GetNetname() == "__NOCONNECT":
+                        # shouldn't be connected but all of them are connected to each other -> let's fix that
+                        # https://github.com/devbisme/WireIt/blob/master/WireIt.py#L610
+                        cnct = brd.GetConnectivity()
+                        cnct.Remove(pad)
+                        no_connect = 0  # PCBNEW ID for the no-connect net.
+                        pad.SetNetCode(no_connect)
+
+                for part in chip["parts"]:
+                    if part["name"][0] == "$":
+                        continue
+                    info = part["info"]
+                    for port,direction in info["port_directions"].items():
+                        if direction == "output":
+                            netnames = [netname for c in info["connections"][port] for netname in bitval_to_netname[c] if netname[0] != "$"]
+                            netname = netnames[0]
+                            #FIXME This will often not match because net names have index in a different format and with different index.
+                            pads = [pad for pad in fp.Pads() if pad.GetNetname() == netname]
+                            if len(pads) > 0:
+                                print("DEBUG: found match, %r, %r" % (netname, pads[0].GetName()))
+                                pcb_txt = pcbnew.PCB_TEXT(brd)
+                                pcb_txt.SetText(netname)
+                                pcb_txt.SetVertJustify(pcbnew.GR_TEXT_V_ALIGN_CENTER)
+                                pcb_txt.SetTextSize(xy_mm(0.7, 0.7))
+                                pcb_txt.SetTextThickness(round(0.1 * 1000 * 1000))
+                                pcb_txt.SetLayer(pcbnew.F_SilkS)
+                                if int(pads[0].GetNumber()) <= 7:
+                                    pcb_txt.SetHorizJustify(pcbnew.GR_TEXT_H_ALIGN_RIGHT)
+                                    pcb_txt.SetPosition(pads[0].GetPosition() - xy_mm(-1, 0))
+                                else:
+                                    pcb_txt.SetHorizJustify(pcbnew.GR_TEXT_H_ALIGN_LEFT)
+                                    pcb_txt.SetPosition(pads[0].GetPosition() - xy_mm(+1, 0))
+                                brd.Add(pcb_txt)
+                            #FIXME
 
         #pcbnew.Refresh()
         pcbnew.SaveBoard(brd_filename, brd)
