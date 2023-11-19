@@ -67,7 +67,10 @@ def make_abc(fnew, mapping, instances, nets, base=0):
     while chip[next(iter(mapping)).format(idx)]:
         for ch, nl in mapping.items():
             if "{}" in ch: #only numbered pins
-                chip[ch.format(idx)] += NC
+                if chip[ch.format(idx)].func == skidl.Pin.INPUT:
+                    chip[ch.format(idx)] += GND
+                else:
+                    chip[ch.format(idx)] += NC
         idx+=1
 
 def make_techmap(fnew, mapping, instances, nets, base=0):
