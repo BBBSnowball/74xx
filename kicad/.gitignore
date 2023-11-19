@@ -16,6 +16,8 @@ serv_vpr_generated.kicad_net
 serv_vpr_generated.kicad_pcb
 serv_vpr_generated.kicad_pro
 serv_vpr_generated.kicad_prl
+serv_vpr_generated.dsn
 result
 result[0-9]
 ~*.lck
+_autosave*

@@ -156,6 +156,11 @@ if __name__ == '__main__':
     brd_filename = output_prefix + ".kicad_pcb"
     kinet2pcb.kinet2pcb(default_circuit, brd_filename, None)
 
+    skidl_netname_to_netname = {}
+    for bitval,net in nets.items():
+        if type(bitval) == int and bitval in bitval_to_netname:
+            skidl_netname_to_netname[net.name] = bitval_to_netname[bitval]
+
     if len(chips) != len(all_chips):
         print("ERROR: We expected to create %d chips but there are actually %d chips! Positions will not be updated!" % (len(chips), len(all_chips)))
     else:
@@ -163,14 +168,15 @@ if __name__ == '__main__':
 
         for i in range(len(chips)):
             chip = chips[i]
-            fp = brd.FindFootprintByReference(all_chips[i].ref)
+            skidl_chip = all_chips[i]
+            fp = brd.FindFootprintByReference(skidl_chip.ref)
             if fp:
                 # coordinate 0,0 seems to be bottom-left in place2.png
                 # (place3.png is newer than serv.place because vpr has crashed)
                 xy = xy_mm(20*chip["x"], -30*chip["y"])
                 fp.SetPosition(xy)
             else:
-                print("WARN: Couldn't find footprint with ref=%r" % (all_chips[i].ref))
+                print("WARN: Couldn't find footprint with ref=%r" % (skidl_chip.ref))
                 xy = xy_mm(0, 0)
 
             # see https://www.atomic14.com/2022/10/24/kicad-python-scripting-cheat-sheet-copy.html
@@ -209,32 +215,24 @@ if __name__ == '__main__':
                         no_connect = 0  # PCBNEW ID for the no-connect net.
                         pad.SetNetCode(no_connect)
 
-                for part in chip["parts"]:
-                    if part["name"][0] == "$":
-                        continue
-                    info = part["info"]
-                    for port,direction in info["port_directions"].items():
-                        if direction == "output":
-                            netnames = [netname for c in info["connections"][port] for netname in bitval_to_netname[c] if netname[0] != "$"]
-                            netname = netnames[0]
-                            #FIXME This will often not match because net names have index in a different format and with different index.
-                            pads = [pad for pad in fp.Pads() if pad.GetNetname() == netname]
-                            if len(pads) > 0:
-                                print("DEBUG: found match, %r, %r" % (netname, pads[0].GetName()))
-                                pcb_txt = pcbnew.PCB_TEXT(brd)
-                                pcb_txt.SetText(netname)
-                                pcb_txt.SetVertJustify(pcbnew.GR_TEXT_V_ALIGN_CENTER)
-                                pcb_txt.SetTextSize(xy_mm(0.7, 0.7))
-                                pcb_txt.SetTextThickness(round(0.1 * 1000 * 1000))
-                                pcb_txt.SetLayer(pcbnew.F_SilkS)
-                                if int(pads[0].GetNumber()) <= 7:
-                                    pcb_txt.SetHorizJustify(pcbnew.GR_TEXT_H_ALIGN_RIGHT)
-                                    pcb_txt.SetPosition(pads[0].GetPosition() - xy_mm(-1, 0))
-                                else:
-                                    pcb_txt.SetHorizJustify(pcbnew.GR_TEXT_H_ALIGN_LEFT)
-                                    pcb_txt.SetPosition(pads[0].GetPosition() - xy_mm(+1, 0))
-                                brd.Add(pcb_txt)
-                            #FIXME
+                for pad in skidl_chip:
+                    if pad.func == skidl.Pin.OUTPUT and pad.net and pad.net.name[0] != "$" and pad.net.name in skidl_netname_to_netname:
+                        netnames = skidl_netname_to_netname[pad.net.name]
+                        netname = sorted(netnames, key = lambda x: len(x))[0]
+                        kicad_pad = fp.FindPadByNumber(int(pad.num))
+                        pcb_txt = pcbnew.PCB_TEXT(brd)
+                        pcb_txt.SetText(netname)
+                        pcb_txt.SetVertJustify(pcbnew.GR_TEXT_V_ALIGN_CENTER)
+                        pcb_txt.SetTextSize(xy_mm(0.7, 0.7))
+                        pcb_txt.SetTextThickness(round(0.1 * 1000 * 1000))
+                        pcb_txt.SetLayer(pcbnew.F_SilkS)
+                        if int(kicad_pad.GetNumber()) <= 7:
+                            pcb_txt.SetHorizJustify(pcbnew.GR_TEXT_H_ALIGN_RIGHT)
+                            pcb_txt.SetPosition(kicad_pad.GetPosition() + xy_mm(-1, 0))
+                        else:
+                            pcb_txt.SetHorizJustify(pcbnew.GR_TEXT_H_ALIGN_LEFT)
+                            pcb_txt.SetPosition(kicad_pad.GetPosition() + xy_mm(+1, 0))
+                        brd.Add(pcb_txt)
 
         #pcbnew.Refresh()
         pcbnew.SaveBoard(brd_filename, brd)
