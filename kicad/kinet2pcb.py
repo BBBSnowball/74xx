@@ -16,9 +16,8 @@ import kinparse
 
 sys.path.append('/usr/lib/python3/dist-packages')
 import pcbnew
-import hierplace
 
-from .pckg_info import __version__
+__version__ = "local"
 
 # Global logger.
 logger = logging.getLogger("kinet2pcb")
@@ -56,6 +55,8 @@ def get_global_fp_lib_table_fn():
 
     paths = (
         "$HOME/.config/kicad",
+        "$HOME/.config/kicad/7.0",
+        "$HOME/.config/kicad/6.0",
         "~/.config/kicad",
         "%APPDATA%/kicad",
         "$HOME/Library/Preferences/kicad",
@@ -67,6 +68,7 @@ def get_global_fp_lib_table_fn():
         path = os.path.normpath(os.path.expanduser(os.path.expandvars(path)))
         fp_lib_table_fn = os.path.join(path, 'fp-lib-table')
         if os.path.exists(fp_lib_table_fn):
+            print("DEBUG: exists: " + fp_lib_table_fn)
             return fp_lib_table_fn
 
     logger.warning("Unable to find global fp-lib-table file.")
@@ -265,21 +267,43 @@ def kinet2pcb(netlist_origin, brd_filename, fp_lib_dirs=None):
             # When handling a ParseResults object.
             pins = net.pins
 
+        try:
+            _ = brd.FindFootprintByReference
+            old_api = False
+        except AttributeError:
+            old_api = True
+
         # Connect the part pins on the netlist net to the PCB net.
         for pin in pins:
 
             # Find the PCB module pad for the current part pin.
             pad = None
+
+            #logger.debug(pin)
+            #logger.debug(pin.part)
+            #logger.debug(pin.part.ref)
+            #logger.debug(pin.ref)
+
+            #ref = pin.ref  # only in unreleased skidl
+            ref = pin.part.ref
+
             try:
-                # Newer PCBNEW API.
-                module = brd.FindFootprintByReference(pin.ref)
-                if module:
-                    pad = module.FindPadByNumber(pin.num)
+                if not old_api:
+                    # Newer PCBNEW API.
+                    module = brd.FindFootprintByReference(ref)
+                    if module:
+                        pad = module.FindPadByNumber(pin.num)
+                else:
+                    # Older PCBNEW API.
+                    module = brd.FindModuleByReference(ref)
+                    if module:
+                        pad = module.FindPadByName(pin.num)
             except AttributeError:
-                # Older PCBNEW API.
-                module = brd.FindModuleByReference(pin.ref)
-                if module:
-                    pad = module.FindPadByName(pin.num)
+                module = None
+                pad = None
+
+            if not module or not pad:
+                logger.warning("Unable to find footprint or pad that we just added: ref=%r, pad=%r" % (ref, pin.num))
 
             # Connect the pad to the PCB net.
             if pad:
@@ -292,7 +316,7 @@ def kinet2pcb(netlist_origin, brd_filename, fp_lib_dirs=None):
     pcbnew.Refresh()
 
     # Place the board parts into non-overlapping areas that follow the design hierarchy.
-    hierplace.hier_place(brd)
+    #hierplace.hier_place(brd)
 
     # Save the PCB into the KiCad PCB file.
     pcbnew.SaveBoard(brd_filename, brd)

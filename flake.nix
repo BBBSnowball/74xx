@@ -20,7 +20,8 @@
           gnumake
           (python3.withPackages (p: with p; [
             skidl
-            (p.callPackage ./nix/kinet2pcb.nix { hierplace = p.callPackage ./nix/hierplace.nix {}; })
+            # disable kinet2pcb because we need our vendored version with fixes
+            #(p.callPackage ./nix/kinet2pcb.nix { hierplace = p.callPackage ./nix/hierplace.nix {}; })
             kicad
           ]))
           kicad
