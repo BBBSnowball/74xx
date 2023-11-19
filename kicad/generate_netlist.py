@@ -7,6 +7,8 @@ import pdb
 
 from parts import *
 
+all_chips = []
+
 def get_toplevel(data):
     top = None
     for mod in data['modules'].values():
@@ -42,11 +44,13 @@ def group_by(key, data):
 def make_abc(fnew, mapping, instances, nets, base=0):
     new_cap()
     chip = fnew()
+    all_chips.append(chip)
     idx = base
     for inst in instances:
         if not chip[next(iter(mapping)).format(idx)]:
             new_cap()
             chip = fnew()
+            all_chips.append(chip)
             idx = base
 
         for ch, nl in mapping.items():
@@ -70,6 +74,7 @@ def make_techmap(fnew, mapping, instances, nets, base=0):
     for inst in instances:
         new_cap()
         chip = fnew()
+        all_chips.append(chip)
         for ch, nl in mapping.items():
             for i, a in enumerate(inst['connections'][nl]):
                 chip[ch.format(i+base)] += nets[a]

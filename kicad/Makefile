@@ -5,7 +5,7 @@ LIBS_74 ?= ../74ac.lib ../74_models.v ../74_adder.v ../74_dffe.v ../74_mux.v ../
 #VPR = ../../vtr-verilog-to-routing/vpr/vpr
 VPR ?= vpr
 
-all: serv.net serv.place
+all: serv.net serv.place serv_vpr.net
 
 %.json: ../benchmarks/%.v $(LIBS_74)
 	yosys -q -s ../synth_74.ys -p "write_json $@" $<
@@ -21,7 +21,7 @@ clean:
 	rm -f *.net *.json *.erc *.log serv.eblif place.png *.rpt *.place
 
 serv.place: serv.eblif 74xx_fpga.xml
-	sed -E <serv.eblif >serv2.eblif 's/ \S+=[$$](false|true|undef)//g'
+	sed -E <serv.eblif >serv2.eblif 's/( \S+=|^[.]conn +)[$$](false|true|undef)/\1unconn/g'
 	rm -f serv2.place serv.place
 	$(VPR) 74xx_fpga.xml serv2.eblif \
 		--netlist_verbosity 2 --alpha_clustering 0.0 --beta_clustering 0.0 --allow_unrelated_clustering on \
@@ -30,3 +30,6 @@ serv.place: serv.eblif 74xx_fpga.xml
 		--timing_analysis off \
 		|| true   ;# ignore errors, for now
 	mv serv2.place serv.place
+
+serv_vpr.net: serv.json serv.place serv2.net generate_netlist2.py generate_netlist.py parts.py
+	python3 generate_netlist2.py serv_vpr.net serv.json serv2.net serv.place

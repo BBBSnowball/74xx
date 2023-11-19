@@ -4,6 +4,7 @@
 *.pyc
 *.net
 /generate_netlist_lib_sklib.py
+/generate_netlist2_lib_sklib.py
 *.eblif
 *.place
 *.rpt
