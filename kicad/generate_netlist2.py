@@ -142,32 +142,5 @@ if __name__ == '__main__':
 
     #skidl.ERC()
     skidl.generate_netlist(file_=output_prefix+".kicad_net")
-
-    # look for fp-lib-table in additional locations (because kinet2pcb's default doesn't work for me)
-    fp_lib_dirs = [
-        os.path.expanduser("~/.config/kicad/%s" % pcbnew.GetMajorMinorVersion()),
-        os.environ["KICAD_FOOTPRINT_DIR"] if "KICAD_FOOTPRINT_DIR" in os.environ else None,
-    ]
-
-    if True:
-        log_level = logging.DEBUG
-        handler = logging.StreamHandler(sys.stdout)
-        handler.setLevel(log_level)
-        kinet2pcb.logger.addHandler(handler)
-        kinet2pcb.logger.setLevel(log_level)
-
-    if True:
-        orig_FindFootprintByReference = pcbnew.BOARD.FindFootprintByReference
-        def FindFootprintByReference(*args, **kwargs):
-            print("DEBUG: FindFootprintByReference: " + repr(args))
-            try:
-                return orig_FindFootprintByReference(*args, **kwargs)
-            except AttributeError:
-                return None
-        pcbnew.BOARD.FindFootprintByReference = FindFootprintByReference
-
-        brd = pcbnew.BOARD()
-        brd.FindFootprintByReference("abc")
-
     # direct use of kinet2pcb because generate_pcb() is only available in newer skidl (newer than newest release)
     kinet2pcb.kinet2pcb(default_circuit, output_prefix+".kicad_pcb", fp_lib_dirs)

@@ -267,12 +267,6 @@ def kinet2pcb(netlist_origin, brd_filename, fp_lib_dirs=None):
             # When handling a ParseResults object.
             pins = net.pins
 
-        try:
-            _ = brd.FindFootprintByReference
-            old_api = False
-        except AttributeError:
-            old_api = True
-
         # Connect the part pins on the netlist net to the PCB net.
         for pin in pins:
 
@@ -288,19 +282,15 @@ def kinet2pcb(netlist_origin, brd_filename, fp_lib_dirs=None):
             ref = pin.part.ref
 
             try:
-                if not old_api:
-                    # Newer PCBNEW API.
-                    module = brd.FindFootprintByReference(ref)
-                    if module:
-                        pad = module.FindPadByNumber(pin.num)
-                else:
-                    # Older PCBNEW API.
-                    module = brd.FindModuleByReference(ref)
-                    if module:
-                        pad = module.FindPadByName(pin.num)
+                # Newer PCBNEW API.
+                module = brd.FindFootprintByReference(ref)
+                if module:
+                    pad = module.FindPadByNumber(pin.num)
             except AttributeError:
-                module = None
-                pad = None
+                # Older PCBNEW API.
+                module = brd.FindModuleByReference(ref)
+                if module:
+                    pad = module.FindPadByName(pin.num)
 
             if not module or not pad:
                 logger.warning("Unable to find footprint or pad that we just added: ref=%r, pad=%r" % (ref, pin.num))
