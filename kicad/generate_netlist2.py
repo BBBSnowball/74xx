@@ -33,8 +33,12 @@ if __name__ == '__main__':
     clb_placement = []
     with open(placement_file) as f:
         #placement_text = f.read()
+        line_no = 0
         for line in f:
+            line_no += 1
             cells = line.split("\t")
+            if len(cells) >= 7 and cells[1] == "":
+                cells = cells[0:1] + cells[2:]
             if len(cells) >= 6 and cells[5][0] == "#":
                 clbnum = int(cells[5][1:].strip())
                 while len(clb_placement) < clbnum+1:
@@ -46,6 +50,8 @@ if __name__ == '__main__':
                     "subblk": int(cells[3]),
                     "layer": int(cells[4]),
                 }
+            elif line_no > 5:
+                print("WARN: Couldn't parse line in placement file: %r -> %r" % (line, cells))
 
     top = get_toplevel(data)
     nets = create_nets(top)
@@ -102,10 +108,10 @@ if __name__ == '__main__':
             clbinfo = None
         else:
             clbnum = int(m[1])
-            if clbnum < len(clb_placement):
+            if clbnum < len(clb_placement) and clb_placement[clbnum]:
                 clbinfo = clb_placement[clbnum]
             else:
-                print("WARN: CLB number is higher than those in placement file! (%s > %s)" % (clbnum, len(clb_placement)-1))
+                print("WARN: CLB number doesn't exist in placement file! (%s > %s)" % (clbnum, len(clb_placement)-1))
                 clbinfo = None
         if not clbinfo:
             clbinfo = { "x": 0, "y": 0 }
