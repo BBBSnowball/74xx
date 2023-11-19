@@ -166,6 +166,7 @@ if __name__ == '__main__':
     else:
         brd = pcbnew.LoadBoard(brd_filename)
 
+        caps = [c for c in default_circuit.parts if c.name == "C"]
         for i in range(len(chips)):
             chip = chips[i]
             skidl_chip = all_chips[i]
@@ -266,6 +267,12 @@ if __name__ == '__main__':
                                 line.SetWidth(int(0.1 * pcbnew.PCB_IU_PER_MM))
                                 brd.Add(line)
                         brd.Add(pcb_txt)
+
+                if i < len(caps):
+                    cap = caps[i]
+                    fp_cap = brd.FindFootprintByReference(cap.ref)
+                    if fp_cap:
+                        fp_cap.SetPosition(fp.GetPosition() + xy_mm(3.8, -4.9))
 
         x_min = min(chip["x"] for chip in chips) * mm_per_chip_x - 10
         x_max = max(chip["x"] for chip in chips) * mm_per_chip_x + 17.5

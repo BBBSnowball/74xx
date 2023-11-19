@@ -8,7 +8,12 @@ GND.drive = skidl.POWER
 
 def new_cap():
     "a decoupling capacitor"
-    pass
+    #chip = skidl.Part('Device', 'C', footprint="Capacitor_THT:C_Disc_D4.7mm_W2.5mm_P5.00mm")
+    #chip = skidl.Part('Device', 'C', footprint="Capacitor_THT:C_Disc_D5.1mm_W3.2mm_P5.00mm")
+    # ugly hack: use local symbol library because skidl cannot parse Kicad 7 Device.kicad_sym, which doesn't have "(id 0)" anymore
+    chip = skidl.Part('Device2', 'C', footprint="Capacitor_THT:C_Disc_D5.1mm_W3.2mm_P5.00mm")
+    chip[1] += GND
+    chip[2] += VCC
 
 def new_74374():
     "8-bit DFF"

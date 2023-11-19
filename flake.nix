@@ -25,11 +25,15 @@
             kicad
           ]))
           kicad
+
+          # freerouting uses Java
+          # start with: _JAVA_AWT_WM_NONREPARENTING=1 java -jar lib/app/freerouting-executable.jar -de serv_vpr_generated.dsn
+          openjdk
         ]) ++ (with packages; [
           vpr
         ]);
 
-        KICAD7_SYMBOL_DIR =  "${pkgs.kicad.libraries.footprints}/share/kicad/symbols";
+        KICAD7_SYMBOL_DIR =  "${pkgs.kicad.libraries.symbols}/share/kicad/symbols";
         KICAD7_FOOTPRINT_DIR = "${pkgs.kicad.libraries.footprints}/share/kicad/footprints";
         KICAD_SYMBOL_DIR = KICAD7_SYMBOL_DIR;
         KICAD_FOOTPRINT_DIR = KICAD7_FOOTPRINT_DIR;
