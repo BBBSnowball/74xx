@@ -13,6 +13,11 @@ import logging
 #from parts import *
 from generate_netlist import *
 
+def xy_mm(x, y):
+    # Kicad uses nanometers
+    mm_to_nm = 1000*1000
+    return pcbnew.VECTOR2I(round(x*mm_to_nm), round(y*mm_to_nm))
+
 if __name__ == '__main__':
     # arguments:
     # 1. output prefix
@@ -157,14 +162,28 @@ if __name__ == '__main__':
         brd = pcbnew.LoadBoard(brd_filename)
 
         for i in range(len(chips)):
+            chip = chips[i]
             fp = brd.FindFootprintByReference(all_chips[i].ref)
             if fp:
-                chip = chips[i]
-                #fp.SetPosition(pcbnew.wxPointMM(20*chip["x"], 50*chip["y"]))
-                mm_to_nm = 1000*1000
-                fp.SetPosition(pcbnew.VECTOR2I(20*chip["x"]*mm_to_nm, 30*chip["y"]*mm_to_nm))
-                #print("DEBUG: position ref=%r at %r" % (all_chips[i].ref, (20*chip["x"]*mm_to_nm, 30*chip["y"]*mm_to_nm)))
+                # coordinate 0,0 seems to be bottom-left in place2.png
+                # (place3.png is newer than serv.place because vpr has crashed)
+                xy = xy_mm(20*chip["x"], -30*chip["y"])
+                fp.SetPosition(xy)
             else:
                 print("WARN: Couldn't find footprint with ref=%r" % (all_chips[i].ref))
+                xy = xy_mm(0, 0)
 
+            # see https://www.atomic14.com/2022/10/24/kicad-python-scripting-cheat-sheet-copy.html
+            pcb_txt = pcbnew.PCB_TEXT(brd)
+            pcb_txt.SetText(("clb[%d]\n%s" % (chip["clbnum"], chip["type"][1:])) + "".join("\n" + part["name"] for part in chip["parts"]))
+            pcb_txt.SetPosition(xy + xy_mm(7.6/2, -1.6))
+            pcb_txt.SetHorizJustify(pcbnew.GR_TEXT_H_ALIGN_CENTER)
+            pcb_txt.SetVertJustify(pcbnew.GR_TEXT_V_ALIGN_BOTTOM)
+            #pcb_txt.Rotate(xy_mm(x, y), text["angle"])
+            pcb_txt.SetTextSize(xy_mm(1, 1))
+            #pcb_txt.SetLayer(pcbnew.F_SilkS)
+            pcb_txt.SetLayer(pcbnew.User_9)
+            brd.Add(pcb_txt)
+
+        #pcbnew.Refresh()
         pcbnew.SaveBoard(brd_filename, brd)
