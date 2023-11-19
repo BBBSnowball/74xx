@@ -5,7 +5,7 @@ LIBS_74 ?= ../74ac.lib ../74_models.v ../74_adder.v ../74_dffe.v ../74_mux.v ../
 #VPR = ../../vtr-verilog-to-routing/vpr/vpr
 VPR ?= vpr
 
-all: serv.net serv.place serv_vpr.net
+all: serv.net serv.place serv_vpr_generated.kicad_pcb
 
 %.json: ../benchmarks/%.v $(LIBS_74)
 	yosys -q -s ../synth_74.ys -p "write_json $@" $<
@@ -31,5 +31,5 @@ serv.place: serv.eblif 74xx_fpga.xml
 		|| true   ;# ignore errors, for now
 	mv serv2.place serv.place
 
-serv_vpr.net: serv.json serv.place serv2.net generate_netlist2.py generate_netlist.py parts.py
-	python3 generate_netlist2.py serv_vpr.net serv.json serv2.net serv.place
+serv_vpr_generated.kicad_net serv_vpr_generated.kicad_pcb: serv.json serv.place serv2.net generate_netlist2.py generate_netlist.py parts.py
+	python3 generate_netlist2.py serv_vpr_generated serv.json serv2.net serv.place

@@ -68,7 +68,6 @@ def get_global_fp_lib_table_fn():
         path = os.path.normpath(os.path.expanduser(os.path.expandvars(path)))
         fp_lib_table_fn = os.path.join(path, 'fp-lib-table')
         if os.path.exists(fp_lib_table_fn):
-            print("DEBUG: exists: " + fp_lib_table_fn)
             return fp_lib_table_fn
 
     logger.warning("Unable to find global fp-lib-table file.")
