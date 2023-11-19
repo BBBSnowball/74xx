@@ -14,9 +14,7 @@ import logging
 from generate_netlist import *
 
 def xy_mm(x, y):
-    # Kicad uses nanometers
-    mm_to_nm = 1000*1000
-    return pcbnew.VECTOR2I(round(x*mm_to_nm), round(y*mm_to_nm))
+    return pcbnew.VECTOR2I(round(x*pcbnew.PCB_IU_PER_MM), round(y*pcbnew.PCB_IU_PER_MM))
 
 if __name__ == '__main__':
     # arguments:
@@ -161,6 +159,8 @@ if __name__ == '__main__':
         if type(bitval) == int and bitval in bitval_to_netname:
             skidl_netname_to_netname[net.name] = bitval_to_netname[bitval]
 
+    #mm_per_chip_x, mm_per_chip_y = 20, -30
+    mm_per_chip_x, mm_per_chip_y = 15, -25
     if len(chips) != len(all_chips):
         print("ERROR: We expected to create %d chips but there are actually %d chips! Positions will not be updated!" % (len(chips), len(all_chips)))
     else:
@@ -173,7 +173,7 @@ if __name__ == '__main__':
             if fp:
                 # coordinate 0,0 seems to be bottom-left in place2.png
                 # (place3.png is newer than serv.place because vpr has crashed)
-                xy = xy_mm(20*chip["x"], -30*chip["y"])
+                xy = xy_mm(mm_per_chip_x*chip["x"], mm_per_chip_y*chip["y"])
                 fp.SetPosition(xy)
             else:
                 print("WARN: Couldn't find footprint with ref=%r" % (skidl_chip.ref))
@@ -181,7 +181,8 @@ if __name__ == '__main__':
 
             # see https://www.atomic14.com/2022/10/24/kicad-python-scripting-cheat-sheet-copy.html
             pcb_txt = pcbnew.PCB_TEXT(brd)
-            pcb_txt.SetText(("clb[%d]\n%s" % (chip["clbnum"], chip["type"][1:])) + "".join("\n" + part["name"] for part in chip["parts"]))
+            #pcb_txt.SetText(("clb[%d]\n%s" % (chip["clbnum"], chip["type"][1:])) + "".join("\n" + part["name"] for part in chip["parts"]))
+            pcb_txt.SetText("clb[%d]\n%s" % (chip["clbnum"], chip["type"][1:]))
             pcb_txt.SetPosition(xy + xy_mm(7.6/2, -1.6))
             if fp:
                 pcb_txt.SetPosition(fp.Reference().GetPosition() + xy_mm(0, -1.0))
@@ -189,7 +190,7 @@ if __name__ == '__main__':
             pcb_txt.SetVertJustify(pcbnew.GR_TEXT_V_ALIGN_BOTTOM)
             #pcb_txt.Rotate(xy_mm(x, y), text["angle"])
             pcb_txt.SetTextSize(xy_mm(1, 1))
-            pcb_txt.SetTextThickness(round(0.15 * 1000 * 1000))
+            pcb_txt.SetTextThickness(round(0.15 * pcbnew.PCB_IU_PER_MM))
             #pcb_txt.SetLayer(pcbnew.F_SilkS)
             pcb_txt.SetLayer(pcbnew.User_9)
             brd.Add(pcb_txt)
@@ -201,7 +202,7 @@ if __name__ == '__main__':
                 pcb_txt.SetHorizJustify(pcbnew.GR_TEXT_H_ALIGN_CENTER)
                 pcb_txt.SetVertJustify(pcbnew.GR_TEXT_V_ALIGN_CENTER)
                 pcb_txt.SetTextSize(xy_mm(1, 1))
-                pcb_txt.SetTextThickness(round(0.15 * 1000 * 1000))
+                pcb_txt.SetTextThickness(round(0.15 * pcbnew.PCB_IU_PER_MM))
                 pcb_txt.SetLayer(pcbnew.F_SilkS)
                 brd.Add(pcb_txt)
                 fp.Value().SetVisible(False)
@@ -224,15 +225,65 @@ if __name__ == '__main__':
                         pcb_txt.SetText(netname)
                         pcb_txt.SetVertJustify(pcbnew.GR_TEXT_V_ALIGN_CENTER)
                         pcb_txt.SetTextSize(xy_mm(0.7, 0.7))
-                        pcb_txt.SetTextThickness(round(0.1 * 1000 * 1000))
+                        pcb_txt.SetTextThickness(round(0.1 * pcbnew.PCB_IU_PER_MM))
                         pcb_txt.SetLayer(pcbnew.F_SilkS)
                         if int(kicad_pad.GetNumber()) <= 7:
-                            pcb_txt.SetHorizJustify(pcbnew.GR_TEXT_H_ALIGN_RIGHT)
-                            pcb_txt.SetPosition(kicad_pad.GetPosition() + xy_mm(-1, 0))
+                            if False:
+                                pcb_txt.SetHorizJustify(pcbnew.GR_TEXT_H_ALIGN_RIGHT)
+                                pcb_txt.SetPosition(kicad_pad.GetPosition() + xy_mm(-1, 0))
+                            else:
+                                # test in Kicad with: pcb_txt = [d for d in brd.GetDrawings() if d.IsSelected()][0]
+                                pcb_txt.SetHorizJustify(pcbnew.GR_TEXT_H_ALIGN_LEFT)
+                                #pcb_txt.SetPosition(kicad_pad.GetPosition() + xy_mm(-2, 0))
+                                #pcb_txt.Rotate(pcb_txt.GetPosition(), pcbnew.EDA_ANGLE(270, pcbnew.DEGREES_T))
+                                pcb_txt.SetPosition(kicad_pad.GetPosition() + xy_mm(-2, -2))
+                                pcb_txt.Rotate(pcb_txt.GetPosition(), pcbnew.EDA_ANGLE(90, pcbnew.DEGREES_T))
+
+                                line = pcbnew.PCB_SHAPE(brd)
+                                line.SetShape(pcbnew.SHAPE_T_SEGMENT)
+                                line.SetFilled(False)
+                                line.SetStart(kicad_pad.GetPosition() + xy_mm(-1, -1))
+                                line.SetEnd(pcb_txt.GetPosition() + xy_mm(+0.3, 0))
+                                line.SetLayer(pcbnew.F_SilkS)
+                                line.SetWidth(int(0.1 * pcbnew.PCB_IU_PER_MM))
+                                brd.Add(line)
                         else:
-                            pcb_txt.SetHorizJustify(pcbnew.GR_TEXT_H_ALIGN_LEFT)
-                            pcb_txt.SetPosition(kicad_pad.GetPosition() + xy_mm(+1, 0))
+                            if False:
+                                pcb_txt.SetHorizJustify(pcbnew.GR_TEXT_H_ALIGN_LEFT)
+                                pcb_txt.SetPosition(kicad_pad.GetPosition() + xy_mm(+1, 0))
+                            else:
+                                pcb_txt.SetHorizJustify(pcbnew.GR_TEXT_H_ALIGN_LEFT)
+                                #pcb_txt.SetPosition(kicad_pad.GetPosition() + xy_mm(+2, 0))
+                                pcb_txt.SetPosition(kicad_pad.GetPosition() + xy_mm(+2, -2))
+                                pcb_txt.Rotate(pcb_txt.GetPosition(), pcbnew.EDA_ANGLE(90, pcbnew.DEGREES_T))
+
+                                line = pcbnew.PCB_SHAPE(brd)
+                                line.SetShape(pcbnew.SHAPE_T_SEGMENT)
+                                line.SetFilled(False)
+                                line.SetStart(kicad_pad.GetPosition() + xy_mm(+1, -1))
+                                line.SetEnd(pcb_txt.GetPosition() + xy_mm(-0.3, 0))
+                                line.SetLayer(pcbnew.F_SilkS)
+                                line.SetWidth(int(0.1 * pcbnew.PCB_IU_PER_MM))
+                                brd.Add(line)
                         brd.Add(pcb_txt)
 
-        #pcbnew.Refresh()
+        x_min = min(chip["x"] for chip in chips) * mm_per_chip_x - 10
+        x_max = max(chip["x"] for chip in chips) * mm_per_chip_x + 17.5
+        y_min = min(chip["y"] for chip in chips) * mm_per_chip_y + 25
+        y_max = max(chip["y"] for chip in chips) * mm_per_chip_y - 10
+        edge_points = [xy_mm(x_min, y_min), xy_mm(x_min, y_max), xy_mm(x_max, y_max), xy_mm(x_max, y_min), xy_mm(x_min, y_min)]
+        for i in range(4):
+            a = edge_points[i]
+            b = edge_points[i+1]
+            line = pcbnew.PCB_SHAPE(brd)
+            line.SetShape(pcbnew.SHAPE_T_SEGMENT)
+            line.SetFilled(False)
+            line.SetStart(a)
+            line.SetEnd(b)
+            line.SetLayer(pcbnew.Edge_Cuts)
+            line.SetWidth(int(0.1 * pcbnew.PCB_IU_PER_MM))
+            brd.Add(line)
+
+        pcbnew.Refresh()
+        pcbnew.ExportSpecctraDSN(brd, output_prefix + ".dsn")
         pcbnew.SaveBoard(brd_filename, brd)
