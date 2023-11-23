@@ -31,5 +31,6 @@ serv.place: serv.eblif 74xx_fpga.xml
 		|| true   ;# ignore errors, for now
 	mv serv2.place serv.place
 
-serv_vpr_generated.kicad_net serv_vpr_generated.kicad_pcb: serv.json serv.place serv2.net generate_netlist2.py generate_netlist.py parts.py
-	python3 generate_netlist2.py serv_vpr_generated serv.json serv2.net serv.place
+serv_vpr_generated.kicad_net serv_vpr_generated.kicad_pcb: serv.json serv.place serv2.net generate_netlist2.py generate_netlist.py parts.py serv_vpr_template.kicad_*
+	cp serv_vpr_template.kicad_pro serv_vpr_generated.kicad_pro
+	python3 generate_netlist2.py serv_vpr_generated serv.json serv2.net serv.place serv_vpr_template.kicad_pcb

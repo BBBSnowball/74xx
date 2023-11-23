@@ -21,3 +21,4 @@ result
 result[0-9]
 ~*.lck
 _autosave*
+serv_vpr_generated*

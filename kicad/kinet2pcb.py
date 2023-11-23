@@ -189,7 +189,7 @@ def get_user_lib_uris(fp_lib_dirs):
     return user_lib_uris
 
 
-def kinet2pcb(netlist_origin, brd_filename, fp_lib_dirs=None):
+def kinet2pcb(netlist_origin, brd_filename, fp_lib_dirs=None, input_board=None):
     """Create a .kicad_pcb from a KiCad netlist file.
 
     Args:
@@ -205,7 +205,7 @@ def kinet2pcb(netlist_origin, brd_filename, fp_lib_dirs=None):
     fp_libs.update(get_user_lib_uris(fp_lib_dirs))
 
     # Create a blank KiCad PCB.
-    brd = pcbnew.BOARD()
+    brd = input_board or pcbnew.BOARD()
 
     # Get the netlist.
     if isinstance(netlist_origin, type('')):

@@ -25,7 +25,7 @@ if __name__ == '__main__':
 
     verbose = bool(int(os.environ.get("VERBOSE", "0")))
 
-    _, output_prefix, json_file, xml_netlist_file, placement_file = sys.argv
+    _, output_prefix, json_file, xml_netlist_file, placement_file, input_board_file = sys.argv
 
     with open(json_file) as f:
         data = json.load(f)
@@ -151,8 +151,9 @@ if __name__ == '__main__':
     #skidl.ERC()
     skidl.generate_netlist(file_=output_prefix+".kicad_net")
     # direct use of kinet2pcb because generate_pcb() is only available in newer skidl (newer than newest release)
+    input_board = pcbnew.LoadBoard(input_board_file) if input_board_file != "" else None
     brd_filename = output_prefix + ".kicad_pcb"
-    kinet2pcb.kinet2pcb(default_circuit, brd_filename, None)
+    kinet2pcb.kinet2pcb(default_circuit, brd_filename, None, input_board=input_board)
 
     skidl_netname_to_netname = {}
     for bitval,net in nets.items():
