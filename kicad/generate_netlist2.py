@@ -160,7 +160,8 @@ if __name__ == '__main__':
             skidl_netname_to_netname[net.name] = bitval_to_netname[bitval]
 
     #mm_per_chip_x, mm_per_chip_y = 20, -30
-    mm_per_chip_x, mm_per_chip_y = 15, -25
+    #mm_per_chip_x, mm_per_chip_y = 15, -25
+    mm_per_chip_x, mm_per_chip_y = 13, -25
     if len(chips) != len(all_chips):
         print("ERROR: We expected to create %d chips but there are actually %d chips! Positions will not be updated!" % (len(chips), len(all_chips)))
     else:
@@ -272,7 +273,7 @@ if __name__ == '__main__':
                     cap = caps[i]
                     fp_cap = brd.FindFootprintByReference(cap.ref)
                     if fp_cap:
-                        fp_cap.SetPosition(fp.GetPosition() + xy_mm(3.8, -4.9))
+                        fp_cap.SetPosition(fp.GetPosition() + xy_mm(3.8-2.5, -4.9))
 
         x_min = min(chip["x"] for chip in chips) * mm_per_chip_x - 10
         x_max = max(chip["x"] for chip in chips) * mm_per_chip_x + 17.5
