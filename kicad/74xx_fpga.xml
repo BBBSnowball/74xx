@@ -137,6 +137,11 @@
       <fill type="clb" priority="10"/>
     </fixed_layout>
     <fixed_layout name="hans1" width="30" height="22">
+      <!--
+        see hans1-grid.png, disable View -> Dot for Dot
+        (as described here: http://jubatian.com/articles/using-non-square-pixel-aspect-ratios-in-gimp/)
+        (x/y resolution is set to 1/13 px/mm (for x) resp. 1/25 px/mm (for y))
+      -->
       <row type="io" starty="0" priority="100"/>
       <row type="io" starty="21" priority="100"/>
       <fill type="clb" priority="10"/>
