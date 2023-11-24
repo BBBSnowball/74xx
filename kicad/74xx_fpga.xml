@@ -136,6 +136,28 @@
       <corners type="EMPTY" priority="101"/>
       <fill type="clb" priority="10"/>
     </fixed_layout>
+    <fixed_layout name="hans1" width="30" height="22">
+      <row type="io" starty="0" priority="100"/>
+      <row type="io" starty="21" priority="100"/>
+      <fill type="clb" priority="10"/>
+      <!-- 7: (30 - 14)/2 = 8 -->
+      <!--
+      <region type="EMPTY" startx="7" endx="13" starty="6" endy="6" priority="20"/>
+      <region type="EMPTY" startx="11" endx="13" starty="7" endy="7" priority="20"/>
+      <region type="EMPTY" startx="10" endx="12" starty="8" endy="8" priority="20"/>
+      <region type="EMPTY" startx="9" endx="11" starty="9" endy="9" priority="20"/>
+      <region type="EMPTY" startx="9" endx="10" starty="10" endy="10" priority="20"/>
+      -->
+      <region type="EMPTY" startx="7"  endx="13" starty="12" endy="12" priority="20"/>
+      <region type="EMPTY" startx="11" endx="13" starty="11" endy="11" priority="20"/>
+      <region type="EMPTY" startx="10" endx="12" starty="10" endy="10" priority="20"/>
+      <region type="EMPTY" startx="9"  endx="11" starty="9"  endy="9" priority="20"/>
+      <region type="EMPTY" startx="9"  endx="10" starty="8"  endy="8" priority="20"/>
+      <!-- 0 -->
+      <region type="EMPTY" startx="15" endx="20" starty="8" endy="12" priority="20"/>
+      <!-- licenses, ... -->
+      <region type="EMPTY" startx="23" endx="29" starty="0" endy="2" priority="30"/>
+    </fixed_layout>
   </layout>
   <device> <!-- FIXME can we remove this? -->
     <!-- VB & JL: Using Ian Kuon's transistor sizing and drive strength data for routing, at 40 nm. Ian used BPTM 

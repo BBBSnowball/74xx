@@ -9,7 +9,8 @@
 *.place
 *.rpt
 *.bak
-*.png
+place.png
+place[0-9]*.png
 serv2.route
 fp-info-cache
 serv_vpr_generated.kicad_net

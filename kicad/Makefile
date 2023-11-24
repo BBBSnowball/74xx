@@ -22,8 +22,10 @@ clean:
 
 serv.place: serv.eblif 74xx_fpga.xml
 	sed -E <serv.eblif >serv2.eblif 's/( \S+=|^[.]conn +)[$$](false|true|undef)/\1unconn/g'
-	rm -f serv2.place serv.place
+	rm -f serv2.place serv.place place[0-9].png
 	$(VPR) 74xx_fpga.xml serv2.eblif \
+		--device hans1 \
+		--pack --place \
 		--netlist_verbosity 2 --alpha_clustering 0.0 --beta_clustering 0.0 --allow_unrelated_clustering on \
 		--clustering_pin_feasibility_filter off --balance_block_type_utilization off \
 		--graphics_commands "set_draw_block_internals 1; set_nets 2; set_macros 1; save_graphics place{i}.png" \
