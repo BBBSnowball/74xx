@@ -10,6 +10,7 @@
     in rec {
       packages = flake-utils.lib.flattenTree {
         vpr = import ./nix/vpr.nix { inherit pkgs; };
+        freerouting = pkgs.callPackage ./nix/freerouting.nix { };
       };
 
       #defaultPackage = packages.hello;
@@ -25,12 +26,9 @@
             kicad
           ]))
           kicad
-
-          # freerouting uses Java
-          # start with: _JAVA_AWT_WM_NONREPARENTING=1 java -jar lib/app/freerouting-executable.jar -de serv_vpr_generated.dsn
-          openjdk
         ]) ++ (with packages; [
           vpr
+          freerouting
         ]);
 
         KICAD7_SYMBOL_DIR =  "${pkgs.kicad.libraries.symbols}/share/kicad/symbols";
