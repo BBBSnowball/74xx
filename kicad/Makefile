@@ -37,4 +37,4 @@ out/serv.place: out/serv.eblif 74xx_fpga.xml
 
 out/serv_vpr_generated.kicad_net out/serv_vpr_generated.kicad_pcb: out/serv.json out/serv.place out/serv2.net generate_netlist2.py generate_netlist.py parts.py serv_vpr_template.kicad_*
 	cp serv_vpr_template.kicad_pro out/serv_vpr_generated.kicad_pro
-	python3 generate_netlist2.py out/serv_vpr_generated out/serv.json out/serv2.net out/serv.place serv_vpr_template.kicad_pcb
+	python3 generate_netlist2.py out/serv_vpr_generated out/serv.json out/serv2.net out/serv.place serv_vpr_template.kicad_pcb 30x22

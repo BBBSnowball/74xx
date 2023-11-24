@@ -25,7 +25,7 @@ if __name__ == '__main__':
 
     verbose = bool(int(os.environ.get("VERBOSE", "0")))
 
-    _, output_prefix, json_file, xml_netlist_file, placement_file, input_board_file = sys.argv
+    _, output_prefix, json_file, xml_netlist_file, placement_file, input_board_file, grid_size = sys.argv
 
     with open(json_file) as f:
         data = json.load(f)
@@ -276,10 +276,21 @@ if __name__ == '__main__':
                     if fp_cap:
                         fp_cap.SetPosition(fp.GetPosition() + xy_mm(3.8-2.5, -4.9))
 
-        x_min = min(chip["x"] for chip in chips) * mm_per_chip_x - 10
-        x_max = max(chip["x"] for chip in chips) * mm_per_chip_x + 17.5
-        y_min = min(chip["y"] for chip in chips) * mm_per_chip_y + 25
-        y_max = max(chip["y"] for chip in chips) * mm_per_chip_y - 10
+        if grid_size != "":
+            width, height = map(int, grid_size.split("x"))
+            x_min = 0
+            y_min = 0
+            x_max = width-1
+            y_max = height-1
+        else:
+            x_min = min(chip["x"] for chip in chips)
+            x_max = max(chip["x"] for chip in chips)
+            y_min = min(chip["y"] for chip in chips)
+            y_max = max(chip["y"] for chip in chips)
+        x_min = x_min * mm_per_chip_x - 10
+        x_max = x_max * mm_per_chip_x + 17.5
+        y_min = y_min * mm_per_chip_y + 25
+        y_max = y_max * mm_per_chip_y - 10
         edge_points = [xy_mm(x_min, y_min), xy_mm(x_min, y_max), xy_mm(x_max, y_max), xy_mm(x_max, y_min), xy_mm(x_min, y_min)]
         for i in range(4):
             a = edge_points[i]
