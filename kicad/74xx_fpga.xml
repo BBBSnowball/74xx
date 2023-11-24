@@ -366,8 +366,8 @@
           <output name="Y" num_pins="1"/>
         </pb_type>
         <interconnect>
-          <direct name="direct1" input="clb.I[5:0]" output="inv.A"/>
-          <direct name="direct2" input="inv.Y" output="clb.O[5:0]"/>
+          <complete name="direct1" input="clb.I" output="inv.A"/>
+          <complete name="direct2" input="inv.Y" output="clb.O"/>
         </interconnect>
       </mode>
       <mode name="74AC32_4x1OR2">
@@ -377,9 +377,9 @@
           <output name="Y" num_pins="1"/>
         </pb_type>
         <interconnect>
-          <direct name="direct1" input="clb.I[3:0]" output="or2.A"/>
-          <direct name="direct2" input="clb.I[7:4]" output="or2.B"/>
-          <direct name="direct3" input="or2.Y" output="clb.O[3:0]"/>
+          <complete name="direct1" input="clb.I" output="or2.A"/>
+          <complete name="direct2" input="clb.I" output="or2.B"/>
+          <complete name="direct3" input="or2.Y" output="clb.O"/>
         </interconnect>
       </mode>
       <mode name="74AC08_4x1AND2">
@@ -389,9 +389,9 @@
           <output name="Y" num_pins="1"/>
         </pb_type>
         <interconnect>
-          <direct name="direct1" input="clb.I[3:0]" output="and2.A"/>
-          <direct name="direct2" input="clb.I[7:4]" output="and2.B"/>
-          <direct name="direct3" input="and2.Y" output="clb.O[3:0]"/>
+          <complete name="direct1" input="clb.I" output="and2.A"/>
+          <complete name="direct2" input="clb.I" output="and2.B"/>
+          <complete name="direct3" input="and2.Y" output="clb.O"/>
         </interconnect>
       </mode>
       <mode name="74AC00_4x1NAND2">
@@ -401,9 +401,9 @@
           <output name="Y" num_pins="1"/>
         </pb_type>
         <interconnect>
-          <direct name="direct1" input="clb.I[3:0]" output="nand2.A"/>
-          <direct name="direct2" input="clb.I[7:4]" output="nand2.B"/>
-          <direct name="direct3" input="nand2.Y" output="clb.O[3:0]"/>
+          <complete name="direct1" input="clb.I" output="nand2.A"/>
+          <complete name="direct2" input="clb.I" output="nand2.B"/>
+          <complete name="direct3" input="nand2.Y" output="clb.O"/>
         </interconnect>
       </mode>
       <mode name="74AC10_3x1NAND3">
@@ -414,10 +414,10 @@
           <output name="Y" num_pins="1"/>
         </pb_type>
         <interconnect>
-          <direct name="direct1" input="clb.I[2:0]" output="nand3.A"/>
-          <direct name="direct2" input="clb.I[6:4]" output="nand3.B"/>
-          <direct name="direct3" input="clb.I[10:8]" output="nand3.C"/>
-          <direct name="direct4" input="nand3.Y" output="clb.O[2:0]"/>
+          <complete name="direct1" input="clb.I" output="nand3.A"/>
+          <complete name="direct2" input="clb.I" output="nand3.B"/>
+          <complete name="direct3" input="clb.I" output="nand3.C"/>
+          <complete name="direct4" input="nand3.Y" output="clb.O"/>
         </interconnect>
       </mode>
       <mode name="74AC86_4x1XOR2">
@@ -427,9 +427,9 @@
           <output name="Y" num_pins="1"/>
         </pb_type>
         <interconnect>
-          <direct name="direct1" input="clb.I[3:0]" output="xor2.A"/>
-          <direct name="direct2" input="clb.I[7:4]" output="xor2.B"/>
-          <direct name="direct3" input="xor2.Y" output="clb.O[3:0]"/>
+          <complete name="direct1" input="clb.I" output="xor2.A"/>
+          <complete name="direct2" input="clb.I" output="xor2.B"/>
+          <complete name="direct3" input="xor2.Y" output="clb.O"/>
         </interconnect>
       </mode>
       <mode name="74AC74_2x1DFFSR">
@@ -441,11 +441,11 @@
           <clock name="CLK" num_pins="1" port_class="clock"/>
         </pb_type>
         <interconnect>
-          <direct name="direct1" input="clb.I[1:0]" output="dff.C"/>
-          <direct name="direct2" input="clb.clk" output="dff.CLK"/>
-          <direct name="direct3" input="clb.I[5:4]" output="dff.D"/>
-          <direct name="direct4" input="clb.I[7:6]" output="dff.P"/>
-          <direct name="direct5" input="dff.Q" output="clb.O[1:0]"/>
+          <complete name="direct1" input="clb.I" output="dff.C"/>
+          <complete name="direct2" input="clb.clk" output="dff.CLK"/>
+          <complete name="direct3" input="clb.I" output="dff.D"/>
+          <complete name="direct4" input="clb.I[7:6]" output="dff.P"/>
+          <complete name="direct5" input="dff.Q" output="clb.O"/>
         </interconnect>
       </mode>
       <!-- keep one normal LUT as a fallback, for now -->
