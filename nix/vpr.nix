@@ -78,7 +78,9 @@ stdenv.mkDerivation rec {
   #];
 
   # Point cmake to our TBBConfig.cmake file.
-  TBB_DIR = builtins.dirOf ./TBBConfig.cmake;
+  #TBB_DIR = ./vpr_cmake;
+  # -> TBB_DIR should point to only the subdir so we don't have a dependency on the flake.
+  TBB_DIR = builtins.path { path = ./vpr_cmake; name = "vpr_cmake"; };
 
   java_capnp = fetchurl {
     url = "https://raw.githubusercontent.com/capnproto/capnproto-java/ed9a67c5fcd46604a88593625a9e38496b83d3ab/compiler/src/main/schema/capnp/java.capnp";

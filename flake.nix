@@ -9,7 +9,7 @@
       pkgs = nixpkgs.legacyPackages.${system};
     in rec {
       packages = flake-utils.lib.flattenTree {
-        vpr = import ./kicad/vpr/vpr.nix { inherit pkgs; };
+        vpr = import ./nix/vpr.nix { inherit pkgs; };
       };
 
       #defaultPackage = packages.hello;
