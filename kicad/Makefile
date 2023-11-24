@@ -24,7 +24,7 @@ out/serv.place: out/serv.eblif 74xx_fpga.xml
 	sed -E <out/serv.eblif >out/serv2.eblif 's/( \S+=|^[.]conn +)[$$](false|true|undef)/\1unconn/g'
 	rm -f out/serv2.place out/serv.place out/serv_vtr_place*.png
 	mkdir -p out
-	$(VPR) 74xx_fpga.xml serv2.eblif \
+	$(VPR) 74xx_fpga.xml out/serv2.eblif \
 		--device hans1 \
 		--pack --place \
 		--netlist_verbosity 2 --alpha_clustering 0.0 --beta_clustering 0.0 --allow_unrelated_clustering on \
