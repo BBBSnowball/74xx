@@ -1,0 +1,3 @@
+[submodule "kicad/serv"]
+	path = kicad/serv
+	url = https://github.com/olofk/serv

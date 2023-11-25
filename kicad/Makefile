@@ -1,6 +1,6 @@
 .PHONY: all clean sim_counter
 
-SERV_SRC ?= ../../serv
+SERV_SRC ?= ./serv
 LIBS_74 ?= ../74ac.lib ../74_models.v ../74_adder.v ../74_dffe.v ../74_mux.v ../synth_74.ys
 #VPR = ../../vtr-verilog-to-routing/vpr/vpr
 VPR ?= vpr
