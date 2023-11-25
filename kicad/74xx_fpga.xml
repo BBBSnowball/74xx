@@ -133,8 +133,8 @@
         <equivalent_sites>
           <site pb_type="clb" pin_mapping="direct"/>
         </equivalent_sites>
-        <input name="I" num_pins="14" equivalent="none"/>
-        <output name="O" num_pins="14" equivalent="none"/>
+        <input name="I" num_pins="14" equivalent="full"/>
+        <output name="O" num_pins="14" equivalent="full"/>
         <clock name="clk" num_pins="2"/>
         <pinlocations pattern="spread"/>
       </sub_tile>
@@ -362,8 +362,8 @@
 	   routing area up significantly, we estimate into the ~70% range. 
 	   -->
     <pb_type name="clb">
-      <input name="I" num_pins="14" equivalent="none"/>
-      <output name="O" num_pins="14" equivalent="none"/>
+      <input name="I" num_pins="14" equivalent="full"/>
+      <output name="O" num_pins="14" equivalent="full"/>
       <clock name="clk" num_pins="2"/>
       <mode name="74AC04_6x1NOT">
         <pb_type name="inv" blif_model=".subckt \74AC04_6x1NOT" num_pb="6">
@@ -430,6 +430,7 @@
           <complete name="direct4" input="nand3.Y" output="clb.O"/>
         </interconnect>
       </mode>
+      <!--
       <mode name="74AC86_4x1XOR2">
         <pb_type name="xor2" blif_model=".subckt \74AC86_4x1XOR2" num_pb="4">
           <input name="A" num_pins="1"/>
@@ -443,13 +444,37 @@
           <complete name="direct3" input="xor2.Y" output="clb.O"/>
         </interconnect>
       </mode>
+      -->
+      <mode name="74AC86_4x1XOR2">
+        <pb_type name="xor2_x4" num_pb="1">
+          <input name="A" num_pins="4"/>
+          <input name="B" num_pins="4"/>
+          <output name="Y" num_pins="4"/>
+          <pb_type name="xor2" blif_model=".subckt \74AC86_4x1XOR2" num_pb="4">
+            <input name="A" num_pins="1"/>
+            <input name="B" num_pins="1"/>
+            <output name="Y" num_pins="1"/>
+            <delay_constant max="174e-12" min="261e-12" in_port="xor2.A xor2.B" out_port="xor2.Y"/>
+          </pb_type>
+          <interconnect>
+            <complete name="direct1" input="xor2_x4.A" output="xor2.A"/>
+            <complete name="direct2" input="xor2_x4.B" output="xor2.B"/>
+            <complete name="direct3" input="xor2.Y" output="xor2_x4.Y"/>
+          </interconnect>
+        </pb_type>
+        <interconnect>
+          <complete name="direct1" input="clb.I" output="xor2_x4.A"/>
+          <complete name="direct2" input="clb.I" output="xor2_x4.B"/>
+          <complete name="direct3" input="xor2_x4.Y" output="clb.O"/>
+        </interconnect>
+      </mode>
       <mode name="74AC74_2x1DFFSR">
         <pb_type name="dff" blif_model=".subckt \74AC74_2x1DFFSR" num_pb="2">
           <input name="C" num_pins="1"/>
-          <input name="D" num_pins="1" port_class="D"/>
+          <input name="D" num_pins="1"/>
           <input name="P" num_pins="1"/>
-          <output name="Q" num_pins="1" port_class="Q"/>
-          <clock name="CLK" num_pins="1" port_class="clock"/>
+          <output name="Q" num_pins="1"/>
+          <clock name="CLK" num_pins="1"/>
           <delay_constant max="174e-12" min="261e-12" in_port="dff.C" out_port="dff.Q"/>
           <delay_constant max="174e-12" min="261e-12" in_port="dff.P" out_port="dff.Q"/>
           <T_setup value="66e-12" port="dff.D" clock="CLK"/>
@@ -462,11 +487,12 @@
           <complete name="direct1" input="clb.I" output="dff.C"/>
           <complete name="direct2" input="clb.clk" output="dff.CLK"/>
           <complete name="direct3" input="clb.I" output="dff.D"/>
-          <complete name="direct4" input="clb.I[7:6]" output="dff.P"/>
+          <complete name="direct4" input="clb.I" output="dff.P"/>
           <complete name="direct5" input="dff.Q" output="clb.O"/>
         </interconnect>
       </mode>
       <!-- keep one normal LUT as a fallback, for now -->
+      <!--
       <mode name="n1_lut6">
         <pb_type name="ble6" num_pb="1">
           <input name="in" num_pins="6"/>
@@ -475,7 +501,6 @@
           <pb_type name="lut6" blif_model=".names" num_pb="1" class="lut">
             <input name="in" num_pins="6" port_class="lut_in"/>
             <output name="out" num_pins="1" port_class="lut_out"/>
-            <!-- LUT timing using delay matrix -->
             <delay_matrix type="max" in_port="lut6.in" out_port="lut6.out">
                 261e-12
                 261e-12
@@ -521,6 +546,7 @@
           <direct name="direct3" input="clb.I[6]" output="ble6.clk"/>
         </interconnect>
       </mode>
+      -->
     </pb_type>
     <!-- Define general purpose logic block (CLB) ends -->
   </complexblocklist>
