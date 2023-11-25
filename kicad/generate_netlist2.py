@@ -84,7 +84,19 @@ if __name__ == '__main__':
 
     cells_by_output_name = {}
     for cellname,v in cells.items():
-        for port,direction in v["port_directions"].items():
+        if v["type"] == "IDT7132_1x1MEM8":
+            port_directions = {
+                "A1ADDR": "input",
+                "A1DATA": "input",
+                "A1EN": "input",
+                "B1ADDR": "input",
+                "B1DATA": "output",
+                "B1EN": "input",
+                "CLK1": "input"
+            }
+        else:
+            port_directions = v["port_directions"]
+        for port,direction in port_directions.items():
             if direction == "output":
                 for c in v["connections"][port]:
                     for netname in bitval_to_netname[c]:
@@ -146,6 +158,9 @@ if __name__ == '__main__':
             })
 
     for chip in chips:
+        if chip["type"] == "\\IDT7132_1x1MEM8":
+            print("FIXME: handle IDT7132_1x1MEM8")
+            continue
         create_chips({chip["type"]: [part["info"] for part in chip["parts"]]}, nets)
 
     #skidl.ERC()
