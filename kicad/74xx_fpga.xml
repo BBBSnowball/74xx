@@ -89,7 +89,7 @@
         <input name="outpad" num_pins="1"/>
         <output name="inpad" num_pins="1"/>
         <clock name="clock" num_pins="1"/>
-        <fc in_type="frac" in_val="0.15" out_type="frac" out_val="0.10"/>
+        <fc in_type="frac" in_val="1" out_type="frac" out_val="1"/>
         <pinlocations pattern="custom">
           <loc side="left">io.outpad io.inpad io.clock</loc>
           <loc side="top">io.outpad io.inpad io.clock</loc>
@@ -104,7 +104,7 @@
           <site pb_type="io_in" pin_mapping="direct"/>
         </equivalent_sites>
         <output name="inpad" num_pins="1"/>
-        <fc in_type="frac" in_val="0.15" out_type="frac" out_val="0.10"/>
+        <fc in_type="frac" in_val="1" out_type="frac" out_val="1"/>
         <pinlocations pattern="custom">
           <loc side="left">inpad.inpad</loc>
           <loc side="top">inpad.inpad</loc>
@@ -119,7 +119,7 @@
           <site pb_type="io_out" pin_mapping="direct"/>
         </equivalent_sites>
         <input name="outpad" num_pins="1"/>
-        <fc in_type="frac" in_val="0.15" out_type="frac" out_val="0.10"/>
+        <fc in_type="frac" in_val="1" out_type="frac" out_val="1"/>
         <pinlocations pattern="custom">
           <loc side="left">outpad.outpad</loc>
           <loc side="top">outpad.outpad</loc>
@@ -133,10 +133,10 @@
         <equivalent_sites>
           <site pb_type="clb" pin_mapping="direct"/>
         </equivalent_sites>
-        <input name="I" num_pins="40" equivalent="none"/>
-        <output name="O" num_pins="20" equivalent="none"/>
+        <input name="I" num_pins="14" equivalent="none"/>
+        <output name="O" num_pins="14" equivalent="none"/>
         <clock name="clk" num_pins="2"/>
-        <fc in_type="frac" in_val="0.15" out_type="frac" out_val="0.10"/>
+        <fc in_type="frac" in_val="1" out_type="frac" out_val="1"/>
         <pinlocations pattern="spread"/>
       </sub_tile>
     </tile>
@@ -219,6 +219,7 @@
       <x distr="uniform" peak="1.000000"/>
       <y distr="uniform" peak="1.000000"/>
     </chan_width_distr>
+    <!-- fs must be 3 -->
     <switch_block type="universal" fs="3"/>
     <connection_block input_switch_name="ipin_cblock"/>
   </device>
@@ -357,8 +358,8 @@
 	   routing area up significantly, we estimate into the ~70% range. 
 	   -->
     <pb_type name="clb">
-      <input name="I" num_pins="40" equivalent="none"/>
-      <output name="O" num_pins="20" equivalent="none"/>
+      <input name="I" num_pins="14" equivalent="none"/>
+      <output name="O" num_pins="14" equivalent="none"/>
       <clock name="clk" num_pins="2"/>
       <mode name="74AC04_6x1NOT">
         <pb_type name="inv" blif_model=".subckt \74AC04_6x1NOT" num_pb="6">
