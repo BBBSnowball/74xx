@@ -89,7 +89,6 @@
         <input name="outpad" num_pins="1"/>
         <output name="inpad" num_pins="1"/>
         <clock name="clock" num_pins="1"/>
-        <fc in_type="frac" in_val="1" out_type="frac" out_val="1"/>
         <pinlocations pattern="custom">
           <loc side="left">io.outpad io.inpad io.clock</loc>
           <loc side="top">io.outpad io.inpad io.clock</loc>
@@ -97,6 +96,7 @@
           <loc side="bottom">io.outpad io.inpad io.clock</loc>
         </pinlocations>
       </sub_tile>
+      <switchblock_locations pattern="all" />
     </tile>
     <tile name="inpad" area="0">
       <sub_tile name="inpad" capacity="8">
@@ -104,7 +104,6 @@
           <site pb_type="io_in" pin_mapping="direct"/>
         </equivalent_sites>
         <output name="inpad" num_pins="1"/>
-        <fc in_type="frac" in_val="1" out_type="frac" out_val="1"/>
         <pinlocations pattern="custom">
           <loc side="left">inpad.inpad</loc>
           <loc side="top">inpad.inpad</loc>
@@ -112,6 +111,7 @@
           <loc side="bottom">inpad.inpad</loc>
         </pinlocations>
       </sub_tile>
+      <switchblock_locations pattern="all" />
     </tile>
     <tile name="outpad" area="0">
       <sub_tile name="outpad" capacity="8">
@@ -119,7 +119,6 @@
           <site pb_type="io_out" pin_mapping="direct"/>
         </equivalent_sites>
         <input name="outpad" num_pins="1"/>
-        <fc in_type="frac" in_val="1" out_type="frac" out_val="1"/>
         <pinlocations pattern="custom">
           <loc side="left">outpad.outpad</loc>
           <loc side="top">outpad.outpad</loc>
@@ -127,6 +126,7 @@
           <loc side="bottom">outpad.outpad</loc>
         </pinlocations>
       </sub_tile>
+      <switchblock_locations pattern="all" />
     </tile>
     <tile name="clb" area="53894">
       <sub_tile name="clb">
@@ -136,9 +136,9 @@
         <input name="I" num_pins="14" equivalent="none"/>
         <output name="O" num_pins="14" equivalent="none"/>
         <clock name="clk" num_pins="2"/>
-        <fc in_type="frac" in_val="1" out_type="frac" out_val="1"/>
         <pinlocations pattern="spread"/>
       </sub_tile>
+      <switchblock_locations pattern="all" />
     </tile>
   </tiles>
   <!-- ODIN II specific config ends -->
@@ -222,8 +222,8 @@
     <!-- fs must be 3 -->
     <switch_block type="universal" fs="3"/>
     <connection_block input_switch_name="ipin_cblock"/>
+    <default_fc in_type="frac" in_val="1" out_type="frac" out_val="1"/>
   </device>
-  <switchblock_locations pattern="full" />
   <switchlist>
     <!-- VB: the mux_trans_size and buf_size data below is in minimum width transistor *areas*, assuming the purple
            book area formula. This means the mux transistors are about 5x minimum drive strength.
