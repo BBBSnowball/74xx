@@ -275,6 +275,8 @@ if __name__ == '__main__':
                     fp_cap = brd.FindFootprintByReference(cap.ref)
                     if fp_cap:
                         fp_cap.SetPosition(fp.GetPosition() + xy_mm(3.8-2.5, -4.9))
+                        #fp_cap.Reference().SetVisible(False)
+                        fp_cap.Reference().SetLayer(pcbnew.F_Fab)
 
         if grid_size != "":
             m = re.match("^(\\d+)x(\\d+)(?:[+](\\d+)(?:[+](\\d+)))$", grid_size)
