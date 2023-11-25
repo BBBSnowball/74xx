@@ -101,7 +101,7 @@ if __name__ == '__main__':
         clb_instance = clb.attrib["instance"]
         mode = clb.attrib["mode"]
 
-        if re.match("\Aio\[\d+\]\Z", clb_instance):
+        if re.match("\A(io|io_in|io_out)\[\d+\]\Z", clb_instance):
             # let's ignore IOs, for now
             continue
         m = re.match("\Aclb\[(\d+)\]\Z", clb_instance)

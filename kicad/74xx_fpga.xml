@@ -123,9 +123,9 @@
         </equivalent_sites>
         <input name="outpad" num_pins="1"/>
         <pinlocations pattern="custom">
-          <loc side="left">outpad.outpad</loc>
-          <loc side="top">outpad.outpad</loc>
-          <loc side="right">outpad.outpad</loc>
+          <!-- <loc side="left">outpad.outpad</loc> -->
+          <!-- <loc side="top">outpad.outpad</loc> -->
+          <!-- <loc side="right">outpad.outpad</loc> -->
           <loc side="bottom">outpad.outpad</loc>
         </pinlocations>
       </sub_tile>
@@ -169,7 +169,7 @@
       <corners type="EMPTY" priority="101"/>
       <fill type="clb" priority="10"/>
     </fixed_layout>
-    <fixed_layout name="hans1" width="30" height="22">
+    <fixed_layout name="hans1" width="30" height="23">
       <!--
         see hans1-grid.png, disable View -> Dot for Dot
         (as described here: http://jubatian.com/articles/using-non-square-pixel-aspect-ratios-in-gimp/)
@@ -197,8 +197,21 @@
       <region type="EMPTY" startx="23" endx="29" starty="0" endy="2" priority="30"/>
 
       <!-- try and keep left and right edge free to hopefully fix connection errors -->
-      <region type="EMPTY" startx="0" endx="0" starty="0" endy="21" priority="40"/>
-      <region type="EMPTY" startx="29" endx="29" starty="0" endy="21" priority="40"/>
+      <region type="EMPTY" startx="0" endx="0" starty="0" endy="21" priority="400"/>
+      <region type="EMPTY" startx="29" endx="29" starty="0" endy="21" priority="400"/>
+
+      <!--
+        Workaround for assertion failure in vpr: It doesn't find the output pin for "io" tiles at the top.
+        `build_bidir_rr_opins: node_index is zero. layer=0, i=25, j=21, pin_index=10, side=0, total_pin_Fc=480, type='io'`
+        -> Can we fix that by adding an empty row?
+        -> Nope.
+        -> We can use io_out and force the ports to the bottom.
+      -->
+      <region type="EMPTY" startx="0" endx="29" starty="22" endy="22" priority="40"/>
+      <region type="outpad" startx="0" endx="29" starty="21" endy="21" priority="200"/>
+      <!-- corners won't work because we have marked first and last column empty -->
+      <region type="EMPTY" startx="0" endx="0" starty="21" endy="21" priority="300"/>
+      <region type="EMPTY" startx="29" endx="29" starty="21" endy="21" priority="300"/>
     </fixed_layout>
   </layout>
   <device> <!-- FIXME can we remove this? -->
@@ -297,6 +310,8 @@
           </direct>
         </interconnect>
       </mode>
+      <!-- We have to disable outpad here so vpr will choose io_out. -->
+      <!--
       <mode name="outpad">
         <pb_type name="outpad" blif_model=".output" num_pb="1">
           <input name="outpad" num_pins="1"/>
@@ -307,6 +322,7 @@
           </direct>
         </interconnect>
       </mode>
+      -->
       <mode name="inpad_clk">
         <pb_type name="inpad" blif_model=".input" num_pb="1">
           <output name="inpad" num_pins="1"/>
