@@ -27,6 +27,7 @@ out/serv.place: out/serv.eblif 74xx_fpga.xml
 	#FIXME If we don't let vpr route, will that make the placement worse? Auto-router seems to have a harder time, now.
 	# --pack --place
 	# --clustering_pin_feasibility_filter off  # not necessary anymore
+	# --pack_verbosity 40
 	$(VPR) 74xx_fpga.xml out/serv2.eblif \
 		--device hans1 \
 		--netlist_verbosity 2 --alpha_clustering 0.0 --beta_clustering 0.0 --allow_unrelated_clustering on \

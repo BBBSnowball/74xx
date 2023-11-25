@@ -90,11 +90,14 @@
         <output name="inpad" num_pins="1"/>
         <clock name="clock" num_pins="1"/>
         <pinlocations pattern="custom">
-          <loc side="left">io.outpad io.inpad io.clock</loc>
+          <!-- <loc side="left">io.outpad io.inpad io.clock</loc> -->
           <loc side="top">io.outpad io.inpad io.clock</loc>
-          <loc side="right">io.outpad io.inpad io.clock</loc>
+          <!-- <loc side="right">io.outpad io.inpad io.clock</loc> -->
           <loc side="bottom">io.outpad io.inpad io.clock</loc>
         </pinlocations>
+        <!--
+        <pinlocations pattern="spread"/>
+        -->
       </sub_tile>
       <switchblock_locations pattern="all" />
     </tile>
