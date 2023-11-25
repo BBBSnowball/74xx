@@ -79,6 +79,19 @@
         <port name="Q" clock="CLK"/>
       </output_ports>
     </model>
+    <model name="IDT7132_1x1MEM8">
+      <input_ports>
+        <port name="CLK1" is_clock="1"/>
+        <port name="A1ADDR" clock="CLK1"/> <!-- num_pins="10" -->
+        <port name="A1DATA" clock="CLK1"/> <!-- num_pins="8" -->
+        <port name="B1ADDR" clock="CLK1"/> <!-- num_pins="10" -->
+        <port name="A1EN" clock="CLK1"/> <!-- num_pins="2" -->
+        <port name="B1EN" clock="CLK1"/>
+      </input_ports>
+      <output_ports>
+        <port name="B1DATA" clock="CLK1"/> <!-- num_pins="8" -->
+      </output_ports>
+    </model>
   </models>
   <tiles>
     <tile name="io" area="0">
@@ -142,6 +155,20 @@
         <pinlocations pattern="spread"/>
       </sub_tile>
       <switchblock_locations pattern="all" />
+    </tile>
+    <tile name="ram" width="2" height="3" area="300000">
+      <sub_tile name="ram">
+        <equivalent_sites>
+          <site pb_type="ram_block" pin_mapping="direct"/>
+        </equivalent_sites>
+        <clock name="CLK1" num_pins="1"/>
+        <input name="A1ADDR" num_pins="10"/>
+        <input name="A1DATA" num_pins="8"/>
+        <input name="B1ADDR" num_pins="10"/>
+        <input name="A1EN" num_pins="2"/>
+        <input name="B1EN" num_pins="1"/>
+        <output name="B1DATA" num_pins="8"/>
+      </sub_tile>
     </tile>
   </tiles>
   <!-- ODIN II specific config ends -->
@@ -255,6 +282,7 @@
       <row type="io" starty="0" priority="100"/>
       <row type="outpad" starty="18" priority="100"/>
       <fill type="clb" priority="10"/>
+      <region type="ram" startx="14"  endx="15" starty="4" endy="6" priority="20"/>
 
       <region type="EMPTY" startx="7"  endx="13" starty="12" endy="12" priority="20"/>
       <region type="EMPTY" startx="11" endx="13" starty="11" endy="11" priority="20"/>
@@ -683,6 +711,36 @@
       -->
     </pb_type>
     <!-- Define general purpose logic block (CLB) ends -->
+    <pb_type name="ram_block">
+      <clock name="CLK1" num_pins="1"/>
+      <input name="A1ADDR" num_pins="10"/>
+      <input name="A1DATA" num_pins="8"/>
+      <input name="B1ADDR" num_pins="10"/>
+      <input name="A1EN" num_pins="2"/>
+      <input name="B1EN" num_pins="1"/>
+      <output name="B1DATA" num_pins="8"/>
+      <mode name="IDT7132_1x1MEM8">
+        <pb_type name="ram_x1" blif_model=".subckt IDT7132_1x1MEM8" num_pb="1">
+          <clock name="CLK1" num_pins="1"/>
+          <input name="A1ADDR" num_pins="10"/>
+          <input name="A1DATA" num_pins="8"/>
+          <input name="B1ADDR" num_pins="10"/>
+          <input name="A1EN" num_pins="2"/>
+          <input name="B1EN" num_pins="1"/>
+          <output name="B1DATA" num_pins="8"/>
+        </pb_type>
+        <interconnect>
+          <direct name="CLK1" input="ram_block.CLK1" output="ram_x1.CLK1"/>
+          <direct name="A1ADDR" input="ram_block.A1ADDR" output="ram_x1.A1ADDR"/>
+          <direct name="A1DATA" input="ram_block.A1DATA" output="ram_x1.A1DATA"/>
+          <direct name="B1ADDR" input="ram_block.B1ADDR" output="ram_x1.B1ADDR"/>
+          <direct name="A1EN" input="ram_block.A1EN" output="ram_x1.A1EN"/>
+          <direct name="B1EN" input="ram_block.B1EN" output="ram_x1.B1EN"/>
+          <direct name="B1DATA" input="ram_x1.B1DATA" output="ram_block.B1DATA"/>
+        </interconnect>
+      </mode>
+      <power method="ignore"/>
+    </pb_type>
   </complexblocklist>
   <power>
     <local_interconnect C_wire="2.5e-10"/>

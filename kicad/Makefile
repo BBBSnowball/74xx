@@ -10,9 +10,9 @@ all: out/serv.place out/serv_vpr_generated.kicad_pcb
 out/%.json: ../benchmarks/%.v $(LIBS_74)
 	yosys -q -s ../synth_74.ys -p "write_json $@" $<
 
-out/serv.json out/serv.eblif: $(SERV_SRC)/rtl/*.v $(LIBS_74)
+out/serv.json out/serv.eblif: $(SERV_SRC)/rtl/*.v serv_rf_top_no_ext.v $(LIBS_74)
 	# We omit -cname and -iname because the output nets actually have more useful names.
-	yosys -q -s ../synth_74.ys -p "write_json $@; write_blif -conn out/serv.eblif" $(SERV_SRC)/rtl/*.v
+	yosys -q -r serv_rf_top_no_ext -s ../synth_74.ys -p "write_json $@; write_blif -conn out/serv.eblif" $(SERV_SRC)/rtl/*.v serv_rf_top_no_ext.v
 
 out/%.net: out/%.json generate_netlist.py parts.py
 	python3 generate_netlist.py $<
@@ -30,7 +30,8 @@ out/serv.place: out/serv.eblif 74xx_fpga.xml
 	# --pack_verbosity 40
 	$(VPR) 74xx_fpga.xml out/serv2.eblif \
 		--device hans3 \
-		--netlist_verbosity 2 --alpha_clustering 0.0 --beta_clustering 0.0 --allow_unrelated_clustering on \
+		--netlist_verbosity 20 --pack_verbosity 4 \
+		--alpha_clustering 0.0 --beta_clustering 0.0 --allow_unrelated_clustering on \
 		--balance_block_type_utilization off \
 		--graphics_commands "set_draw_block_internals 1; set_nets 2; set_macros 1; save_graphics out/serv_vtr_place{i}.png" \
 		--timing_analysis off \
