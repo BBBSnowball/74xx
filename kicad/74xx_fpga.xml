@@ -98,6 +98,10 @@
       <sub_tile name="io" capacity="8">
         <equivalent_sites>
           <site pb_type="io" pin_mapping="direct"/>
+          <!--
+          <site pb_type="io_in" pin_mapping="direct"/>
+          <site pb_type="io_out" pin_mapping="direct"/>
+          -->
         </equivalent_sites>
         <input name="outpad" num_pins="1"/>
         <output name="inpad" num_pins="1"/>
@@ -121,10 +125,10 @@
         </equivalent_sites>
         <output name="inpad" num_pins="1"/>
         <pinlocations pattern="custom">
-          <loc side="left">inpad.inpad</loc>
+          <!-- <loc side="left">inpad.inpad</loc> -->
           <loc side="top">inpad.inpad</loc>
-          <loc side="right">inpad.inpad</loc>
-          <loc side="bottom">inpad.inpad</loc>
+          <!-- <loc side="right">inpad.inpad</loc> -->
+          <!-- <loc side="bottom">inpad.inpad</loc> -->
         </pinlocations>
       </sub_tile>
       <switchblock_locations pattern="all" />
@@ -279,7 +283,7 @@
         (as described here: http://jubatian.com/articles/using-non-square-pixel-aspect-ratios-in-gimp/)
         (x/y resolution is set to 1/13 px/mm (for x) resp. 1/25 px/mm (for y))
       -->
-      <row type="io" starty="0" priority="100"/>
+      <row type="inpad" starty="0" priority="100"/>
       <row type="outpad" starty="18" priority="100"/>
       <fill type="clb" priority="10"/>
       <region type="ram" startx="14"  endx="15" starty="4" endy="6" priority="20"/>
@@ -306,6 +310,40 @@
         -> We can use io_out and force the ports to the bottom.
       -->
       <row type="EMPTY" starty="19" priority="40"/>
+    </fixed_layout>
+    <fixed_layout name="hans4" width="30" height="21">
+      <!--
+        see hans1-grid.png, disable View -> Dot for Dot
+        (as described here: http://jubatian.com/articles/using-non-square-pixel-aspect-ratios-in-gimp/)
+        (x/y resolution is set to 1/13 px/mm (for x) resp. 1/25 px/mm (for y))
+      -->
+      <row type="inpad" starty="0" priority="100"/>
+      <row type="outpad" starty="19" priority="100"/>
+      <fill type="clb" priority="10"/>
+      <region type="ram" startx="12"  endx="13" starty="3" endy="5" priority="20"/>
+
+      <region type="EMPTY" startx="7"  endx="13" starty="12" endy="12" priority="20"/>
+      <region type="EMPTY" startx="11" endx="13" starty="11" endy="11" priority="20"/>
+      <region type="EMPTY" startx="10" endx="12" starty="10" endy="10" priority="20"/>
+      <region type="EMPTY" startx="9"  endx="11" starty="9"  endy="9" priority="20"/>
+      <region type="EMPTY" startx="9"  endx="10" starty="8"  endy="8" priority="20"/>
+      <!-- 0 -->
+      <region type="EMPTY" startx="15" endx="20" starty="8" endy="12" priority="20"/>
+      <!-- licenses, ... -->
+      <region type="EMPTY" startx="17" endx="29" starty="0" endy="4" priority="200"/>
+
+      <!-- try and keep left and right edge free to hopefully fix connection errors -> and because we have to many clbs -->
+      <region type="EMPTY" startx="0" endx="0" starty="0" endy="20" priority="400"/>
+      <region type="EMPTY" startx="27" endx="29" starty="0" endy="20" priority="400"/>
+
+      <!--
+        Workaround for assertion failure in vpr: It doesn't find the output pin for "io" tiles at the top.
+        `build_bidir_rr_opins: node_index is zero. layer=0, i=25, j=21, pin_index=10, side=0, total_pin_Fc=480, type='io'`
+        -> Can we fix that by adding an empty row?
+        -> Nope.
+        -> We can use io_out and force the ports to the bottom.
+      -->
+      <row type="EMPTY" starty="20" priority="40"/>
     </fixed_layout>
   </layout>
   <device> <!-- FIXME can we remove this? -->
@@ -394,6 +432,7 @@
 			outpad delay: 0.9545
 
 	     -->
+       <!--
       <mode name="inpad">
         <pb_type name="inpad" blif_model=".input" num_pb="1">
           <output name="inpad" num_pins="1"/>
@@ -404,6 +443,7 @@
           </direct>
         </interconnect>
       </mode>
+      -->
       <!-- We have to disable outpad here so vpr will choose io_out. -->
       <!--
       <mode name="outpad">
@@ -417,6 +457,7 @@
         </interconnect>
       </mode>
       -->
+      <!--
       <mode name="inpad_clk">
         <pb_type name="inpad" blif_model=".input" num_pb="1">
           <output name="inpad" num_pins="1"/>
@@ -427,12 +468,14 @@
           </direct>
         </interconnect>
       </mode>
+      -->
       <!-- Every input pin is driven by 15% of the tracks in a channel, every output pin is driven by 10% of the tracks in a channel -->
       <!-- IOs go on the periphery of the FPGA, for consistency, 
           make it physically equivalent on all sides so that only one definition of I/Os is needed.
           If I do not make a physically equivalent definition, then I need to define 4 different I/Os, one for each side of the FPGA
         -->
       <!-- Place I/Os on the sides of the FPGA -->
+      <interconnect/>
       <power method="ignore"/>
     </pb_type>
     <pb_type name="io_in">

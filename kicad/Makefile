@@ -29,7 +29,7 @@ out/serv.place: out/serv.eblif 74xx_fpga.xml
 	# --clustering_pin_feasibility_filter off  # not necessary anymore
 	# --pack_verbosity 40
 	$(VPR) 74xx_fpga.xml out/serv2.eblif \
-		--device hans3 \
+		--device hans4 \
 		--netlist_verbosity 20 --pack_verbosity 4 \
 		--alpha_clustering 0.0 --beta_clustering 0.0 --allow_unrelated_clustering on \
 		--balance_block_type_utilization off \
