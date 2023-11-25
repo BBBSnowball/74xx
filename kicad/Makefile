@@ -29,20 +29,19 @@ out/serv.place: out/serv.eblif 74xx_fpga.xml
 	# --clustering_pin_feasibility_filter off  # not necessary anymore
 	# --pack_verbosity 40
 	$(VPR) 74xx_fpga.xml out/serv2.eblif \
-		--device hans1 \
+		--device hans3 \
 		--netlist_verbosity 2 --alpha_clustering 0.0 --beta_clustering 0.0 --allow_unrelated_clustering on \
 		--balance_block_type_utilization off \
 		--graphics_commands "set_draw_block_internals 1; set_nets 2; set_macros 1; save_graphics out/serv_vtr_place{i}.png" \
 		--timing_analysis off \
 		--outfile_prefix out/ \
-		|& tee out/serv_vpr.log \
-		|| true   ;# ignore errors, for now
+		|& tee out/serv_vpr.log
 	mv out/serv2.place out/serv.place
 
 out/serv_vpr_generated.kicad_net out/serv_vpr_generated.kicad_pcb: out/serv.json out/serv.place out/serv2.net generate_netlist2.py generate_netlist.py parts.py serv_vpr_template.kicad_*
 	cp serv_vpr_template.kicad_pro out/serv_vpr_generated.kicad_pro
-	python3 generate_netlist2.py out/serv_vpr_generated out/serv.json out/serv2.net out/serv.place serv_vpr_template.kicad_pcb 30x22
+	python3 generate_netlist2.py out/serv_vpr_generated out/serv.json out/serv2.net out/serv.place serv_vpr_template.kicad_pcb 27x19+1+0
 
 .PHONY: serv-freerouting
 serv-freerouting: out/serv_vpr_generated.kicad_pcb
-	freerouting -de kicad/out/serv_vpr_generated.dsn
+	freerouting -de out/serv_vpr_generated.dsn

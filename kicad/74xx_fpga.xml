@@ -213,6 +213,72 @@
       <region type="EMPTY" startx="0" endx="0" starty="21" endy="21" priority="300"/>
       <region type="EMPTY" startx="29" endx="29" starty="21" endy="21" priority="300"/>
     </fixed_layout>
+    <fixed_layout name="hans2" width="30" height="19">
+      <!--
+        see hans1-grid.png, disable View -> Dot for Dot
+        (as described here: http://jubatian.com/articles/using-non-square-pixel-aspect-ratios-in-gimp/)
+        (x/y resolution is set to 1/13 px/mm (for x) resp. 1/25 px/mm (for y))
+      -->
+      <row type="io" starty="0" priority="100"/>
+      <row type="outpad" starty="17" priority="100"/>
+      <fill type="clb" priority="10"/>
+
+      <region type="EMPTY" startx="7"  endx="13" starty="12" endy="12" priority="20"/>
+      <region type="EMPTY" startx="11" endx="13" starty="11" endy="11" priority="20"/>
+      <region type="EMPTY" startx="10" endx="12" starty="10" endy="10" priority="20"/>
+      <region type="EMPTY" startx="9"  endx="11" starty="9"  endy="9" priority="20"/>
+      <region type="EMPTY" startx="9"  endx="10" starty="8"  endy="8" priority="20"/>
+      <!-- 0 -->
+      <region type="EMPTY" startx="15" endx="20" starty="8" endy="12" priority="20"/>
+      <!-- licenses, ... -->
+      <region type="EMPTY" startx="21" endx="29" starty="0" endy="3" priority="30"/>
+
+      <!-- try and keep left and right edge free to hopefully fix connection errors -> and because we have to many clbs -->
+      <region type="EMPTY" startx="0" endx="0" starty="0" endy="17" priority="400"/>
+      <region type="EMPTY" startx="27" endx="29" starty="0" endy="17" priority="400"/>
+
+      <!--
+        Workaround for assertion failure in vpr: It doesn't find the output pin for "io" tiles at the top.
+        `build_bidir_rr_opins: node_index is zero. layer=0, i=25, j=21, pin_index=10, side=0, total_pin_Fc=480, type='io'`
+        -> Can we fix that by adding an empty row?
+        -> Nope.
+        -> We can use io_out and force the ports to the bottom.
+      -->
+      <row type="EMPTY" starty="18" priority="40"/>
+    </fixed_layout>
+    <fixed_layout name="hans3" width="30" height="20">
+      <!--
+        see hans1-grid.png, disable View -> Dot for Dot
+        (as described here: http://jubatian.com/articles/using-non-square-pixel-aspect-ratios-in-gimp/)
+        (x/y resolution is set to 1/13 px/mm (for x) resp. 1/25 px/mm (for y))
+      -->
+      <row type="io" starty="0" priority="100"/>
+      <row type="outpad" starty="18" priority="100"/>
+      <fill type="clb" priority="10"/>
+
+      <region type="EMPTY" startx="7"  endx="13" starty="12" endy="12" priority="20"/>
+      <region type="EMPTY" startx="11" endx="13" starty="11" endy="11" priority="20"/>
+      <region type="EMPTY" startx="10" endx="12" starty="10" endy="10" priority="20"/>
+      <region type="EMPTY" startx="9"  endx="11" starty="9"  endy="9" priority="20"/>
+      <region type="EMPTY" startx="9"  endx="10" starty="8"  endy="8" priority="20"/>
+      <!-- 0 -->
+      <region type="EMPTY" startx="15" endx="20" starty="8" endy="12" priority="20"/>
+      <!-- licenses, ... -->
+      <region type="EMPTY" startx="17" endx="29" starty="0" endy="4" priority="200"/>
+
+      <!-- try and keep left and right edge free to hopefully fix connection errors -> and because we have to many clbs -->
+      <region type="EMPTY" startx="0" endx="0" starty="0" endy="19" priority="400"/>
+      <region type="EMPTY" startx="27" endx="29" starty="0" endy="19" priority="400"/>
+
+      <!--
+        Workaround for assertion failure in vpr: It doesn't find the output pin for "io" tiles at the top.
+        `build_bidir_rr_opins: node_index is zero. layer=0, i=25, j=21, pin_index=10, side=0, total_pin_Fc=480, type='io'`
+        -> Can we fix that by adding an empty row?
+        -> Nope.
+        -> We can use io_out and force the ports to the bottom.
+      -->
+      <row type="EMPTY" starty="19" priority="40"/>
+    </fixed_layout>
   </layout>
   <device> <!-- FIXME can we remove this? -->
     <!-- VB & JL: Using Ian Kuon's transistor sizing and drive strength data for routing, at 40 nm. Ian used BPTM 

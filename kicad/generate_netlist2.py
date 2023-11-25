@@ -277,11 +277,14 @@ if __name__ == '__main__':
                         fp_cap.SetPosition(fp.GetPosition() + xy_mm(3.8-2.5, -4.9))
 
         if grid_size != "":
-            width, height = map(int, grid_size.split("x"))
-            x_min = 0
-            y_min = 0
+            m = re.match("^(\\d+)x(\\d+)(?:[+](\\d+)(?:[+](\\d+)))$", grid_size)
+            if not m:
+                raise Exception("Couldn't parse grid size")
+            width, height = int(m[1]), int(m[2])
             x_max = width-1
             y_max = height-1
+            x_min = int(m[3] or 0)
+            y_min = int(m[4] or 0)
         else:
             x_min = min(chip["x"] for chip in chips)
             x_max = max(chip["x"] for chip in chips)
