@@ -192,6 +192,10 @@
       <region type="EMPTY" startx="15" endx="20" starty="8" endy="12" priority="20"/>
       <!-- licenses, ... -->
       <region type="EMPTY" startx="23" endx="29" starty="0" endy="2" priority="30"/>
+
+      <!-- try and keep left and right edge free to hopefully fix connection errors -->
+      <region type="EMPTY" startx="0" endx="0" starty="0" endy="21" priority="40"/>
+      <region type="EMPTY" startx="29" endx="29" starty="0" endy="21" priority="40"/>
     </fixed_layout>
   </layout>
   <device> <!-- FIXME can we remove this? -->
