@@ -200,6 +200,51 @@ def create_chips(chip_types, nets):
         elif typ == '\\74AC86_4x1XOR2':
             mapping = {"{}A": "A", "{}B": "B", "{}Y": "Y"}
             make_abc(new_7486, mapping, chips, nets, 1)
+        elif typ == "\\IDT7132_1x1MEM8":
+            mapping = {
+                "A1ADDR[0]": "A0L",
+                "A1ADDR[1]": "A1L",
+                "A1ADDR[2]": "A2L",
+                "A1ADDR[3]": "A3L",
+                "A1ADDR[4]": "A4L",
+                "A1ADDR[5]": "A5L",
+                "A1ADDR[6]": "A6L",
+                "A1ADDR[7]": "A7L",
+                "A1ADDR[8]": "A8L",
+                "A1ADDR[9]": "A9L",
+                "A1ADDR[10]": "A10L",
+                "A1DATA[0]": "I/O0L",
+                "A1DATA[1]": "I/O1L",
+                "A1DATA[2]": "I/O2L",
+                "A1DATA[3]": "I/O3L",
+                "A1DATA[4]": "I/O4L",
+                "A1DATA[5]": "I/O5L",
+                "A1DATA[6]": "I/O6L",
+                "A1DATA[7]": "I/O7L",
+                "A1EN": "CEL",  #FIXME invert
+                "B1ADDR[0]": "A0R",
+                "B1ADDR[1]": "A1R",
+                "B1ADDR[2]": "A2R",
+                "B1ADDR[3]": "A3R",
+                "B1ADDR[4]": "A4R",
+                "B1ADDR[5]": "A5R",
+                "B1ADDR[6]": "A6R",
+                "B1ADDR[7]": "A7R",
+                "B1ADDR[8]": "A8R",
+                "B1ADDR[9]": "A9R",
+                "B1ADDR[10]": "A10R",
+                "B1DATA[0]": "I/O0R",
+                "B1DATA[1]": "I/O1R",
+                "B1DATA[2]": "I/O2R",
+                "B1DATA[3]": "I/O3R",
+                "B1DATA[4]": "I/O4R",
+                "B1DATA[5]": "I/O5R",
+                "B1DATA[6]": "I/O6R",
+                "B1DATA[7]": "I/O7R",
+                "B1EN": "CER",  #FIXME invert
+                #"CLK1": "CLK1"
+            }
+            make_techmap(new_7132, mapping, chips, nets, 0)
         else:
             raise Exception("%s not handled" % typ)
 

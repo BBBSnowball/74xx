@@ -33,7 +33,7 @@ if __name__ == '__main__':
     xml_netlist = ET.parse(xml_netlist_file)
     netlist_rootblock = xml_netlist.getroot()
 
-    clb_placement = []
+    block_placement = []
     with open(placement_file) as f:
         #placement_text = f.read()
         line_no = 0
@@ -43,10 +43,10 @@ if __name__ == '__main__':
             if len(cells) >= 7 and cells[1] == "":
                 cells = cells[0:1] + cells[2:]
             if len(cells) >= 6 and cells[5][0] == "#":
-                clbnum = int(cells[5][1:].strip())
-                while len(clb_placement) < clbnum+1:
-                    clb_placement.append(None)
-                clb_placement[clbnum] = {
+                block_num = int(cells[5][1:].strip())
+                while len(block_placement) < block_num+1:
+                    block_placement.append(None)
+                block_placement[block_num] = {
                     "one_of_the_names": cells[0],
                     "x": int(cells[1]),
                     "y": int(cells[2]),
@@ -82,6 +82,7 @@ if __name__ == '__main__':
         for bitval,v in bitval_to_netname.items():
             print("bit %d is net %s" % (bitval,v))
 
+    #FIXME remove?
     cells_by_output_name = {}
     for cellname,v in cells.items():
         if v["type"] == "IDT7132_1x1MEM8":
@@ -106,9 +107,13 @@ if __name__ == '__main__':
             print("net %s is output of cell %s" % (k,v))
 
     chips = []
+    block_num = -1
     for clb in netlist_rootblock:
         if clb.tag != "block":
             continue
+        # block names are different (but always seem to have the number)
+        # The blocks seem to always be in order so let's keep it simple.
+        block_num += 1
 
         clb_instance = clb.attrib["instance"]
         mode = clb.attrib["mode"]
@@ -116,23 +121,14 @@ if __name__ == '__main__':
         if re.match("\A(io|io_in|io_out)\[\d+\]\Z", clb_instance):
             # let's ignore IOs, for now
             continue
-        m = re.match("\Aclb\[(\d+)\]\Z", clb_instance)
-        if not m:
-            print("WARN: CLB instance name is not as expected!")
-            clbnum = 0
-            clbinfo = None
+        if block_num < len(block_placement) and block_placement[block_num]:
+            clbinfo = block_placement[block_num]
         else:
-            clbnum = int(m[1])
-            if clbnum < len(clb_placement) and clb_placement[clbnum]:
-                clbinfo = clb_placement[clbnum]
-            else:
-                print("WARN: CLB number doesn't exist in placement file! (%s > %s)" % (clbnum, len(clb_placement)-1))
-                clbinfo = None
-        if not clbinfo:
+            print("WARN: Block number %d doesn't exist in placement file!" % (block_num,))
             clbinfo = { "x": 0, "y": 0 }
 
         if verbose:
-            print("CLB: %s (%s), %r" % (clb_instance, mode, clbinfo))
+            print("Block: %s (%s), %r" % (clb_instance, mode, clbinfo))
 
         parts = []
         for part in clb:
@@ -150,7 +146,7 @@ if __name__ == '__main__':
 
         if len(parts) > 0:
             chips.append({
-                "clbnum": clbnum,
+                "clbnum": block_num,
                 "type": "\\" + mode,
                 "x": clbinfo["x"],
                 "y": clbinfo["y"],
@@ -158,9 +154,6 @@ if __name__ == '__main__':
             })
 
     for chip in chips:
-        if chip["type"] == "\\IDT7132_1x1MEM8":
-            print("FIXME: handle IDT7132_1x1MEM8")
-            continue
         create_chips({chip["type"]: [part["info"] for part in chip["parts"]]}, nets)
 
     #skidl.ERC()
