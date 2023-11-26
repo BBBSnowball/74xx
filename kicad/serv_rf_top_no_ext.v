@@ -16,11 +16,11 @@ module serv_rf_top_no_ext
    input wire 	      clk,
    input wire 	      i_rst,
    input wire 	      i_timer_irq,
-   output wire [31:0] o_ibus_adr,
+   output wire [15:0] o_ibus_adr,  // reduced to 16-bit, i.e. max 64 kB
    output wire 	      o_ibus_cyc,
    input wire [31:0]  i_ibus_rdt,
    input wire 	      i_ibus_ack,
-   output wire [31:0] o_dbus_adr,
+   output wire [15:0] o_dbus_adr,  // reduced to 16-bit, i.e. max 64 kB
    output wire [31:0] o_dbus_dat,
    output wire [3:0]  o_dbus_sel,
    output wire 	      o_dbus_we ,
