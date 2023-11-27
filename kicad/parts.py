@@ -181,12 +181,12 @@ def new_74161():
 
 def new_7132():
     "RAM"
-    chip = skidl.Part('Memory_RAM', 'IDT7132', footprint="Package_DIP:DIP-48_W15.24mm")
+    #chip = skidl.Part('Memory_RAM', 'IDT7132', footprint="Package_DIP:DIP-48_W15.24mm")
+    chip = skidl.Part('Device2', 'IDT7132', footprint="Package_DIP:DIP-48_W15.24mm")
     chip.VCC += VCC
     chip.GND += GND
-    chip['~R/WL'] += VCC  # write
-    chip['~R/WR'] += GND  # read
-    chip['~OEL'] += VCC
-    chip['~OER'] += GND
-    chip.CEP += VCC
+    chip['R/WL'] += GND  # write
+    chip['R/WR'] += VCC  # read
+    chip['/OEL'] += VCC
+    chip['/OER'] += GND
     return chip
