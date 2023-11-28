@@ -185,6 +185,9 @@ if __name__ == '__main__':
                 # coordinate 0,0 seems to be bottom-left in place2.png
                 # (place3.png is newer than serv.place because vpr has crashed)
                 xy = xy_mm(mm_per_chip_x*chip["x"], mm_per_chip_y*chip["y"])
+                if chip["type"] == "\\IDT7132_1x1MEM8":
+                    # This one is larger.
+                    xy += xy_mm(3, -50)
                 fp.SetPosition(xy)
             else:
                 print("WARN: Couldn't find footprint with ref=%r" % (skidl_chip.ref))
@@ -212,7 +215,7 @@ if __name__ == '__main__':
                 pcb_txt.SetPosition(fp.Value().GetPosition())
                 pcb_txt.SetHorizJustify(pcbnew.GR_TEXT_H_ALIGN_CENTER)
                 pcb_txt.SetVertJustify(pcbnew.GR_TEXT_V_ALIGN_CENTER)
-                pcb_txt.SetTextSize(xy_mm(1, 1))
+                pcb_txt.SetTextSize(xy_mm(0.9, 0.9))
                 pcb_txt.SetTextThickness(round(0.15 * pcbnew.PCB_IU_PER_MM))
                 pcb_txt.SetLayer(pcbnew.F_SilkS)
                 brd.Add(pcb_txt)
@@ -282,7 +285,10 @@ if __name__ == '__main__':
                     cap = caps[i]
                     fp_cap = brd.FindFootprintByReference(cap.ref)
                     if fp_cap:
-                        fp_cap.SetPosition(fp.GetPosition() + xy_mm(3.8-2.5, -4.9))
+                        cap_xy = fp.GetPosition() + xy_mm(3.8-2.5, -4.9)
+                        if chip["type"] == "\\IDT7132_1x1MEM8":
+                            cap_xy += xy_mm(4, 0)
+                        fp_cap.SetPosition(cap_xy)
                         #fp_cap.Reference().SetVisible(False)
                         fp_cap.Reference().SetLayer(pcbnew.F_Fab)
 
