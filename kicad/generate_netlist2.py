@@ -134,15 +134,19 @@ if __name__ == '__main__':
         for part in clb:
             if part.tag != "block":
                 continue
-            name = part.attrib["name"]
-            if verbose:
-                print("  part %s: %s" % (part.attrib["instance"], name))
-            if name == "open" or mode in ["inpad", "outpad"]:
-                pass
-            elif name not in cells_by_output_name:
-                print("ERROR: Part not found in JSON netlist: clb=%r, part=%r" % (clb_instance, name))
-            else:
-                parts.append({"name": name, "name_in_json": cells_by_output_name[name], "info": top['cells'][cells_by_output_name[name]] })
+            parts2 = [x for x in part if x.tag == "block"]
+            if len(parts2) == 0:
+                parts2 = [part]
+            for part2 in parts2:
+                name = part2.attrib["name"]
+                if verbose:
+                    print("  part %s: %s" % (part2.attrib["instance"], name))
+                if name == "open" or mode in ["inpad", "outpad"]:
+                    pass
+                elif name not in cells_by_output_name:
+                    print("ERROR: Part not found in JSON netlist: clb=%r, part=%r" % (clb_instance, name))
+                else:
+                    parts.append({"name": name, "name_in_json": cells_by_output_name[name], "info": top['cells'][cells_by_output_name[name]] })
 
         if len(parts) > 0:
             chips.append({
