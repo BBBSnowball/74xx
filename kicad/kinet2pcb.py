@@ -252,8 +252,11 @@ def kinet2pcb(netlist_origin, brd_filename, fp_lib_dirs=None, input_board=None):
     cnct = brd.GetConnectivity()
     for net in netlist.nets:
 
-        # Create a net with the current net name.
-        pcb_net = pcbnew.NETINFO_ITEM(brd, net.name)
+        # Create a net with the current net name
+        # (or use an existing one - only possible if we started with a template)
+        pcb_net = brd.FindNet("/" + net.name)
+        if not pcb_net:
+            pcb_net = pcbnew.NETINFO_ITEM(brd, net.name)
 
         # Add the net to the PCB.
         brd.Add(pcb_net)

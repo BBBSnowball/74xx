@@ -23,10 +23,17 @@ def create_nets(top):
     nets = {}
     nets['0']=GND
     nets['1']=VCC
-    for name, net in top['netnames'].items():
+    # process ports before nets so port name will be preferred over register name that drives it
+    for name, net in list(top['ports'].items())+list(top['netnames'].items()):
+        i = -1
+        is_vector = (len(net['bits']) > 1)
         for bit in net['bits']:
+            i += 1
             if not bit in nets:
-                net = skidl.Net(name)
+                if is_vector:
+                    net = skidl.Net("%s_%d" % (name, i))
+                else:
+                    net = skidl.Net(name)
                 nets[bit] = net
             else:
                 net = nets[bit]
