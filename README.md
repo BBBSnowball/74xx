@@ -24,12 +24,10 @@ Why?
 Olof was presenting the serv core at a virtual RISC-V meetup
 in 2021. He mentioned that someone had converted it to 74xx
 logic and the gate count was low enough that I just *might*
-be able to afford building one.
-
-(He pointed me to the Twitter thread, which had all the relevant
-details but I can't seem to find it anymore. Much of this project
-is based on their idea and work so I will gladly add credit
-here if I ever find it again.)
+be able to afford building one. He pointed me to
+[this](https://web.archive.org/web/20200930140306/https://twitter.com/ravenslofty/status/1311285303236268033)
+Twitter thread by ravenslofty. Much of this project is based
+on their idea.
 
 It would be a lot of work to make a PCB that has enough educational
 value to warant the cost, e.g. add RAM and peripherals and have some
